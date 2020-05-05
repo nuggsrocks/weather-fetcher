@@ -24,9 +24,36 @@ class App extends React.Component {
     }
 
     render() {
+        const weather = this.state.weather;
         return (
             <div>
-                <h1>Hello World</h1>
+                {
+                    weather !== null &&
+                    <div>
+                        <h1>{weather.location.name}</h1>
+                        <div className={'display-item'}>
+                            <img id={'weather-icon'} src={weather.current['weather_icons'][0]} alt={'weather'}/>
+                        </div>
+                        <div className={'display-item'}>
+                            <span className={'bold'}>Temp:</span> {weather.current['temperature']}&deg;C
+                        </div>
+                        <div className={'display-item'}>
+                            <span className={'bold'}>Feels Like:</span> {weather.current['feelslike']}&deg;C
+                        </div>
+                        <div className={'display-item'}>
+                            <span className={'bold'}>Humidity:</span> {weather.current['humidity']}%
+                        </div>
+                        <div className={'display-item'}>
+                            <span className={'bold'}>Pressure:</span> {weather.current['pressure']} mbar
+                        </div>
+                        <div className={'display-item'}>
+                                <span className={'bold'}>
+                                    Wind:
+                                </span> {weather.current['wind_speed']} MPH {weather.current['wind_dir']}
+                        </div>
+                    </div>
+
+                }
             </div>
         );
     }
