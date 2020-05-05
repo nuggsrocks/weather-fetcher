@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
+import '@fortawesome/fontawesome-free/js/all';
 
 class App extends React.Component {
     constructor(props) {
@@ -27,6 +28,12 @@ class App extends React.Component {
         const weather = this.state.weather;
         return (
             <div>
+                {
+                    weather === null &&
+                    <div className={'icon'}>
+                        <span className={'fas fa-sync-alt fa-spin fa-3x'}/>
+                    </div>
+                }
                 {
                     weather !== null &&
                     <div>
