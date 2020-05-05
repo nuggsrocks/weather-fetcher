@@ -2,4 +2,19 @@
 
 h1 {
   color: red;
+  font-size: 70px;
+}
+
+.flexbox {
+  display: flex;
+  justify-content: center;
+}
+
+.display-item {
+  font-size: 40px;
+}
+
+#weather-icon {
+  width: 100px;
+  height: auto;
 }

@@ -27,7 +27,7 @@ class App extends React.Component {
     render() {
         const weather = this.state.weather;
         return (
-            <div>
+            <div className={'flexbox'}>
                 {
                     weather === null &&
                     <div>
@@ -36,27 +36,30 @@ class App extends React.Component {
                 }
                 {
                     weather !== null &&
-                    <div className={'card'}>
-                        <h1>{weather.location.name}</h1>
-                        <div className={'display-item'}>
+                    <div className={'card text-center w-auto'}>
+                        <div className={'card-header'}>
+                            <h1>{weather.location.name}</h1>
+                        </div>
+                        <div className={'card-body'}>
                             <img id={'weather-icon'} src={weather.current['weather_icons'][0]} alt={'weather'}/>
-                        </div>
-                        <div className={'display-item'}>
-                            <span className={'bold'}>Temp:</span> {weather.current['temperature']}&deg;F
-                        </div>
-                        <div className={'display-item'}>
-                            <span className={'bold'}>Feels Like:</span> {weather.current['feelslike']}&deg;F
-                        </div>
-                        <div className={'display-item'}>
-                            <span className={'bold'}>Humidity:</span> {weather.current['humidity']}%
-                        </div>
-                        <div className={'display-item'}>
-                            <span className={'bold'}>Pressure:</span> {weather.current['pressure']} mbar
-                        </div>
-                        <div className={'display-item'}>
-                                <span className={'bold'}>
+                            <hr/>
+                            <div className={'display-item'}>
+                                <span className={'font-weight-bold'}>Temp:</span> {weather.current['temperature']}&deg;F
+                            </div>
+                            <div className={'display-item'}>
+                                <span className={'font-weight-bold'}>Feels Like:</span> {weather.current['feelslike']}&deg;F
+                            </div>
+                            <div className={'display-item'}>
+                                <span className={'font-weight-bold'}>Humidity:</span> {weather.current['humidity']}%
+                            </div>
+                            <div className={'display-item'}>
+                                <span className={'font-weight-bold'}>Pressure:</span> {weather.current['pressure']} mbar
+                            </div>
+                            <div className={'display-item'}>
+                                <span className={'font-weight-bold'}>
                                     Wind:
                                 </span> {weather.current['wind_speed']} MPH {weather.current['wind_dir']}
+                            </div>
                         </div>
                     </div>
 
