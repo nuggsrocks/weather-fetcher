@@ -30,13 +30,13 @@ class App extends React.Component {
             <div>
                 {
                     weather === null &&
-                    <div className={'icon'}>
+                    <div>
                         <span className={'fas fa-sync-alt fa-spin fa-3x'}/>
                     </div>
                 }
                 {
                     weather !== null &&
-                    <div>
+                    <div className={'card'}>
                         <h1>{weather.location.name}</h1>
                         <div className={'display-item'}>
                             <img id={'weather-icon'} src={weather.current['weather_icons'][0]} alt={'weather'}/>

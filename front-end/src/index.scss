@@ -1,5 +1,5 @@
-$my-color: red;
+@import "~bootstrap/scss/bootstrap";
 
 h1 {
-    color: $my-color;
+  color: red;
 }
