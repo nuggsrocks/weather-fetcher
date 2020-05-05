@@ -2,6 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
 
-const hello = <h1>Hello World</h1>;
+class App extends React.Component {
+    render() {
+        return (
+            <div>
+                <h1>Hello World</h1>
+            </div>
+        );
+    }
+}
 
-ReactDOM.render(hello, document.getElementById('root'));
+ReactDOM.render(<App/>, document.getElementById('root'));
