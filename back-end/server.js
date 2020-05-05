@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const axios = require('axios');
+const cors = require('cors');
 
 const port = 3000;
 
@@ -16,6 +17,8 @@ function fetchWeather(location, res) {
         .then(response => res.send(response.data))
         .catch(e => console.log(e));
 }
+
+app.use(cors());
 
 app.route('/weather').get((req, res) => {
     fetchWeather(req.query.location, res);
