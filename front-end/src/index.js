@@ -42,10 +42,10 @@ class App extends React.Component {
                             <img id={'weather-icon'} src={weather.current['weather_icons'][0]} alt={'weather'}/>
                         </div>
                         <div className={'display-item'}>
-                            <span className={'bold'}>Temp:</span> {weather.current['temperature']}&deg;C
+                            <span className={'bold'}>Temp:</span> {weather.current['temperature']}&deg;F
                         </div>
                         <div className={'display-item'}>
-                            <span className={'bold'}>Feels Like:</span> {weather.current['feelslike']}&deg;C
+                            <span className={'bold'}>Feels Like:</span> {weather.current['feelslike']}&deg;F
                         </div>
                         <div className={'display-item'}>
                             <span className={'bold'}>Humidity:</span> {weather.current['humidity']}%

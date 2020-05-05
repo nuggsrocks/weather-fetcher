@@ -11,7 +11,8 @@ const apiKey = '34186a5024e82427bd4224df690c561b';
 function fetchWeather(location, res) {
     const params = {
         access_key: apiKey,
-        query: location
+        query: location,
+        units: 'f'
     }
     axios.get(apiUrl, {params})
         .then(response => res.send(response.data))
