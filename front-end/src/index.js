@@ -11,6 +11,7 @@ class App extends React.Component {
             weather: null
         }
         this.fetchWeather = this.fetchWeather.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     fetchWeather() {
@@ -18,6 +19,12 @@ class App extends React.Component {
         fetch('http://localhost:3000/weather?location=' + input)
             .then(res => res.json())
             .then(data => this.setState({weather: data}));
+    }
+
+    handleChange(e) {
+        this.setState({
+            input: e.target.value
+        });
     }
 
     componentDidMount() {
@@ -28,15 +35,22 @@ class App extends React.Component {
         const weather = this.state.weather;
         return (
             <div className={'flexbox'}>
+                <div>
+                    <input
+                        type={'text'} className={'form-control text-center'}
+                        value={this.state.input} onChange={this.handleChange}
+                    />
+                    <button className={'btn btn-primary w-100'}>Search</button>
+                </div>
                 {
                     weather === null &&
-                    <div>
+                    <div id={'load-icon-wrapper'}>
                         <span className={'fas fa-sync-alt fa-spin fa-3x'}/>
                     </div>
                 }
                 {
                     weather !== null &&
-                    <div className={'card text-center w-auto'}>
+                    <div className={'card text-center'}>
                         <div className={'card-header'}>
                             <h1>{weather.location.name}</h1>
                         </div>
