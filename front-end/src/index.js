@@ -40,7 +40,10 @@ class App extends React.Component {
                         type={'text'} className={'form-control text-center'}
                         value={this.state.input} onChange={this.handleChange}
                     />
-                    <button className={'btn btn-primary w-100'}>Search</button>
+                    <button
+                        className={'btn btn-primary w-100'} onClick={this.fetchWeather}
+                    >Search
+                    </button>
                 </div>
                 {
                     weather === null &&
