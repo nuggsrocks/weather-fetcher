@@ -3,7 +3,7 @@ const app = express();
 const axios = require('axios');
 const cors = require('cors');
 
-const port = 3000;
+const port = process.env.PORT;
 
 const apiUrl = 'http://api.weatherstack.com/current';
 const apiKey = '34186a5024e82427bd4224df690c561b';

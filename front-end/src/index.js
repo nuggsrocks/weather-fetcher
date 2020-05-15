@@ -16,7 +16,7 @@ class App extends React.Component {
 
     fetchWeather() {
         let input = this.state.input === null ? 'fetch:ip' : this.state.input;
-        fetch('http://localhost:3000/weather?location=' + input)
+        fetch('http://192.168.1.5/weather?location=' + input)
             .then(res => res.json())
             .then(data => this.setState({weather: data}));
     }
@@ -58,6 +58,11 @@ class App extends React.Component {
                             <h1>{weather.location.name}</h1>
                         </div>
                         <div className={'card-body'}>
+                            <div className={'display-item pb-3'}>
+                                <span className={'font-weight-bold'}>
+                                    Currently:
+                                </span> {weather.current['weather_descriptions'][0]}
+                            </div>
                             <img id={'weather-icon'} src={weather.current['weather_icons'][0]} alt={'weather'}/>
                             <hr/>
                             <div className={'display-item'}>
