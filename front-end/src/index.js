@@ -16,7 +16,7 @@ class App extends React.Component {
 
     fetchWeather() {
         let input = this.state.input === null ? 'fetch:ip' : this.state.input;
-        fetch('http://192.168.1.5/weather?location=' + input)
+        fetch('http://localhost/server/weather?location=' + input)
             .then(res => res.json())
             .then(data => this.setState({weather: data}));
     }
