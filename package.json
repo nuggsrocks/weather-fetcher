@@ -1,15 +1,17 @@
 {
   "name": "weather-fetcher",
   "version": "1.0.0",
-  "description": "",
+  "homepage": "/weather",
   "main": "index.js",
   "scripts": {
+    "prestart": "webpack-dev-server",
+    "start": "pm2 start ecosystem.config.js --env=dev --only weather-server",
     "prebuild": "webpack --mode=production",
-    "build": "pm2 start ecosystem.config.js --env=dev",
+    "build": "pm2 start ecosystem.config.js --env=production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Matthew Fisher <nuggsrocks@yahoo.com>",
   "license": "ISC",
   "engines": {
     "node": "12.16.2",
