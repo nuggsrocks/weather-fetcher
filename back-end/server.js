@@ -27,7 +27,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(cors());
 
-app.route('/weather-fetcher/server').get((req, res) => {
+app.route('/').get((req, res) => {
     fetchWeather(req.query.location, res);
 });
 
