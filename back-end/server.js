@@ -19,6 +19,10 @@ function fetchWeather(location, res) {
         .catch(e => console.log(e));
 }
 
+app.use((req, res, next) => {
+    console.log(req.method + ' - ' + req.path);
+    next();
+});
 app.use(cors());
 
 app.route('/weather-fetcher/server').get((req, res) => {
