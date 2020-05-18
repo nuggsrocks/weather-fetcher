@@ -23,6 +23,8 @@ app.use((req, res, next) => {
     console.log(req.method + ' - ' + req.path);
     next();
 });
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 app.use(cors());
 
 app.route('/weather-fetcher/server').get((req, res) => {
