@@ -21,7 +21,7 @@ function fetchWeather(location, res) {
 
 app.use(cors());
 
-app.route('/weather/server').get((req, res) => {
+app.route('/weather-fetcher/server').get((req, res) => {
     fetchWeather(req.query.location, res);
 });
 
