@@ -1,4 +1,5 @@
 import React from 'react';
+import "@fortawesome/fontawesome-free/js/all";
 
 class App extends React.Component {
     constructor(props) {

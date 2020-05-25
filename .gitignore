@@ -1,4 +1,4 @@
 .idea/**
 node_modules/**
-front-end/public/**
+public/**
 *.swp
