@@ -6,6 +6,7 @@
 	"scripts": {
 		"start": "pm2 start ecosystem.config.js --env=dev",
 		"build:prod": "rm -rf public && webpack --mode production --config webpack.prod.config.js && webpack --mode production --config webpack.server.config.js",
+		"build:dev": "rm -rf public && webpack --mode development --config webpack.dev.config.js && webpack --mode development --config webpack.server.config.js",
 		"stop": "pm2 delete weather-server weather-client",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
