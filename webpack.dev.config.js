@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
 	entry: [
 		'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
-		path.join(__dirname, 'src', 'js', 'index.js')
+		'./src/js/index.js'
 	],
 	output: {
 		path: path.join(__dirname, 'public'),
@@ -13,6 +13,7 @@ module.exports = {
 		filename: '[name].js'
 	},
 	target: 'web',
+	mode: 'development',
 	devtool: 'source-map',
 	module: {
 		rules: [

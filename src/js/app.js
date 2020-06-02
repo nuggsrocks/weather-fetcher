@@ -5,7 +5,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            input: null,
+            input: '',
             weather: null
         }
         this.fetchWeather = this.fetchWeather.bind(this);
@@ -13,7 +13,7 @@ class App extends React.Component {
     }
 
     fetchWeather() {
-        let input = this.state.input === null ? 'fetch:ip' : this.state.input;
+        let input = this.state.input === '' ? 'fetch:ip' : this.state.input;
         fetch('http://localhost/weather-fetcher/server?location=' + input)
             .then(res => res.json())
             .then(data => this.setState({weather: data}))
