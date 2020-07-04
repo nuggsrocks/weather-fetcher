@@ -14,7 +14,7 @@ class App extends React.Component {
 
     fetchWeather() {
         let input = this.state.input === '' ? 'fetch:ip' : this.state.input;
-        fetch('http://localhost/weather-fetcher/server?location=' + input)
+        fetch('http://localhost:3000/weather-fetcher/server?location=' + input)
             .then(res => res.json())
             .then(data => this.setState({weather: data}))
             .catch(e => console.log(e));
@@ -34,6 +34,7 @@ class App extends React.Component {
         const weather = this.state.weather;
         return (
             <div className={'flexbox'}>
+
                 <div>
                     <input
                         type={'text'} className={'form-control text-center'}
@@ -51,7 +52,7 @@ class App extends React.Component {
                     </div>
                 }
                 {
-                    weather !== null &&
+                    weather !== null && weather.location !== undefined &&
                     <div className={'card text-center'}>
                         <div className={'card-header'}>
                             <h1>{weather.location.name}</h1>
@@ -83,7 +84,10 @@ class App extends React.Component {
                             </div>
                         </div>
                     </div>
-
+                }
+                {
+                    weather !== null && weather.location === undefined &&
+                        <h2>You did not enter a valid location!</h2>
                 }
             </div>
         );
