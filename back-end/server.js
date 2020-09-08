@@ -3,7 +3,9 @@ const app = express();
 const axios = require('axios');
 const cors = require('cors');
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
+
+const host = process.env.HOST || 'localhost';
 
 const apiUrl = 'http://api.weatherstack.com/current';
 const apiKey = '34186a5024e82427bd4224df690c561b';
@@ -31,4 +33,4 @@ app.route('/weather-fetcher/server').get((req, res) => {
     fetchWeather(req.query.location, res);
 });
 
-app.listen(port, () => console.log('http://localhost:' + port));
+app.listen(port, host, () => console.log('http://' + host + ':' + port));
