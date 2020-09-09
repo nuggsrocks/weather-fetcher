@@ -1,22 +1,38 @@
 import React from 'react';
 
+import overcastImg from '../img/overcast.jpeg';
+
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             input: '',
-            weather: null
+            weather: null,
+            weatherImage: ''
         }
         this.fetchWeather = this.fetchWeather.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.weatherImage = '';
     }
 
     fetchWeather() {
-        this.setState({weather: null});
+        this.setState({
+            weather: null,
+            weatherImage: ''
+        });
         let input = this.state.input === '' ? 'fetch:ip' : this.state.input;
         fetch(`http://${process.env.HOST}:3000/weather-fetcher/server?location=${input}`)
             .then(res => res.json())
-            .then(data => this.setState({weather: data}))
+            .then(data => {
+                let imgSrc = '';
+                if (data.current.weather_descriptions[0].search(/Overcast/) !== -1) {
+                    imgSrc = overcastImg;
+                }
+                this.setState({
+                    weather: data,
+                    weatherImage: imgSrc
+                });
+            })
             .catch(e => console.log(e));
         
     }
@@ -33,6 +49,9 @@ class App extends React.Component {
 
     render() {
         const weather = this.state.weather;
+
+
+
         return (
             <div>
 
@@ -70,7 +89,7 @@ class App extends React.Component {
                             </span>
                         </div>
                         
-                        <img id={'weather-icon'} src={weather.current['weather_icons'][0]} alt={'weather'}/>
+                        <div id='weather-image' style={{backgroundImage: `url(${this.state.weatherImage})`}}/>
 
 
                         <div>
