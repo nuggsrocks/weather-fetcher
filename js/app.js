@@ -44,13 +44,17 @@ class App extends React.Component {
                 </div>
                 {
                     weather === null &&
-                    <h1>Loading...</h1>
+                    <article>
+                        <header>
+                            <h1>Loading...</h1>
+                        </header>
+                    </article>
                 }
                 {
                     weather !== null && weather.location !== undefined &&
                     <article>
                         <header>
-                         <h1>{weather.location.name}</h1>
+                            <h1>{weather.location.name}</h1>
                         </header>
                         
                         <div className='spacer'/>
@@ -96,11 +100,15 @@ class App extends React.Component {
                         </div>
 
                     </article>
-                    }
-                    {
-                        weather !== null && weather.location === undefined &&
-                        <h2>You did not enter a valid location!</h2>
-                    }
+                }
+                {
+                    weather !== null && weather.location === undefined &&
+                    <article>
+                        <header>
+                            <h2>You did not enter a valid location!</h2>
+                        </header>
+                    </article>
+                }
             </div>
         );
     }
