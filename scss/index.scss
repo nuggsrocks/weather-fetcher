@@ -3,9 +3,22 @@ $medium: #a1a1a1;
 $light: #fffef5;
 
 body {
-	margin: 20px;
+	margin: 0;
 	background-color: $dark;
+}
+
+div#root {
+	
 	color: $light;
+	height: 100%;
+
+	main {
+		padding: 20px;
+		height: 100%;
+		background: {
+			size: cover;
+		}
+	}
 }
 
 button, article {
@@ -79,10 +92,6 @@ article {
 	
 
 	div {
-
-		&#weather-image {
-			height: 200px;
-		}
 
 		span {
 			font: {
