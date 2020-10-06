@@ -123,6 +123,13 @@ article {
 	}
 }
 
+div#map {
+	height: 40vh;
+	border-radius: 5px;
+	border: 1px solid $light;
+	margin-top: 10px;
+}
+
 
 @media screen and (max-width: 768px) {
 	article {

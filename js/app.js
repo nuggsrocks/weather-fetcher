@@ -1,139 +1,128 @@
 import React from 'react';
-
+import leaflet from 'leaflet';
 import overcastImg from '../img/overcast.jpeg';
 import sunnyImg from '../img/sunny.jpg';
 
+
+
 class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            input: '',
-            weather: null,
-            weatherImage: ''
-        }
-        this.fetchWeather = this.fetchWeather.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-    }
+	constructor(props) {
+		super(props);
+		this.state = {
+			input: '',
+			weather: null,
+			weatherImage: '',
+			location: '',
+			locationName: ''
+		}
+		this.geolocate = this.geolocate.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.setMapView = this.setMapView.bind(this);
 
-    fetchWeather() {
-        this.setState({
-            weather: null,
-            weatherImage: ''
-        });
-        let input = this.state.input === '' ? 'fetch:ip' : this.state.input;
-        fetch(`http://${process.env.HOST}:3000/weather-fetcher/server?location=${input}`)
-            .then(res => res.json())
-            .then(data => {
-                let imgSrc = '',
-                    currentWeather = data.current.weather_descriptions[0];
-                if (currentWeather.search(/Overcast/) !== -1) {
-                    imgSrc = overcastImg;
-                } else if (currentWeather.search(/Sunny/) !== -1) {
-                    imgSrc = sunnyImg;
-                }
-                this.setState({
-                    weather: data,
-                    weatherImage: imgSrc
-                });
-            })
-            .catch(e => console.log(e));
-        
-    }
+		this.map = null;
+		this.marker = null;
+	}
 
-    handleChange(e) {
-        this.setState({
-            input: e.target.value
-        });
-    }
+	geolocate() {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(position => {
+				this.setState({location: [position.coords.latitude, position.coords.longitude]});
+				this.findAddress();
+				this.setMapView();
+			}, error => console.error(error));
+		} else {
+			this.setState({weather: undefined});
+		}
+	}
 
-    componentDidMount() {
-        this.fetchWeather();
-    }
+	findAddress() {
+		
+	}
 
-    render() {
-        const weather = this.state.weather;
+	setMapView() {
+		
+		this.map.setView(this.state.location, 10);
+		leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+		}).addTo(this.map);
 
+		if (this.marker !== null) {
+			this.marker.remove();
+		}
 
+		this.marker = leaflet.marker(this.state.location).bindPopup('Your location').addTo(this.map);
 
-        return (
-            <main style={{backgroundImage: `url(${this.state.weatherImage})`}}>
+		this.map.on('click', event => {
+			let coords = event.latlng;
+			let lat = Math.round(coords.lat * 1000) / 1000;
+			let lng = Math.round(coords.lng * 1000) / 1000;
+			this.setState({location: [lat, lng]});
+			this.findAddress();
+			this.setMapView();
+		});
+		
+	}
 
-                <div>
-                    <input type={'text'} value={this.state.input} onChange={this.handleChange} />
-                    <button onClick={this.fetchWeather}>
-                        Search
-                    </button>
-                </div>
-                {
-                    weather === null &&
-                    <article>
-                        <header>
-                            <h1>Loading...</h1>
-                        </header>
-                    </article>
-                }
-                {
-                    weather !== null && weather.location !== undefined &&
-                    <article>
-                        <header>
-                            <h1>{weather.location.name}</h1>
-                        </header>
-                        
-                        <div className='spacer'/>
+	handleChange(e) {
+		this.setState({
+			input: e.target.value
+		});
+	}
+
+	componentDidMount() {
+		this.map = leaflet.map('map');
+		leaflet.control.scale().addTo(this.map);
+		this.geolocate();
+	}
+
+	render() {
+		const weather = this.state.weather;
 
 
-                        <div>
-                            <span>
-                                Currently:
-                            </span>
-                            &nbsp;
-                            <span>
-                                {weather.current['weather_descriptions'][0]}
-                            </span>
-                        </div>
-                        
-                        
+
+		return (
+			<main style={{backgroundImage: `url(${this.state.weatherImage})`}}>
+
+				<div>
+					<input type={'text'} value={this.state.input} onChange={this.handleChange} />
+					<button onClick={this.fetchWeather}>
+						Search
+					</button>
+				</div>
+				{
+					this.state.locationName === '' &&
+					<article>
+						<header>
+							<h1>Loading...</h1>
+						</header>
+					</article>
+				}
+				{
+					this.state.locationName !== '' &&
+					<article>
+						<header>
+							<h1>{this.state.locationName}</h1>
+						</header>
+						
+						<div className='spacer'/>
 
 
-                        <div>
-                            <span>Temp:</span>
-                            &nbsp;
-                            <span>{weather.current['temperature']}&deg;F</span>
-                        </div>
-                        <div>
-                            <span className={'font-weight-bold'}>Feels Like:</span>
-                            &nbsp;
-                            <span>{weather.current['feelslike']}&deg;F</span>
-                        </div>
-                        <div>
-                            <span className={'font-weight-bold'}>Humidity:</span>
-                            &nbsp;
-                            <span>{weather.current['humidity']}%</span>
-                        </div>
-                        <div>
-                            <span className={'font-weight-bold'}>Pressure:</span>
-                            &nbsp;
-                            <span>{weather.current['pressure']} mbar</span>
-                        </div>
-                        <div>
-                            <span className={'font-weight-bold'}>Wind:</span>
-                            &nbsp;
-                            <span>{weather.current['wind_speed']} MPH {weather.current['wind_dir']}</span>
-                        </div>
+					</article>
+				}
+				{
+					weather !== null && weather.location === undefined &&
+					<article>
+						<header>
+							<h2>There was an unknown error!</h2>
+						</header>
+					</article>
+				}
 
-                    </article>
-                }
-                {
-                    weather !== null && weather.location === undefined &&
-                    <article>
-                        <header>
-                            <h2>You did not enter a valid location!</h2>
-                        </header>
-                    </article>
-                }
-            </main>
-        );
-    }
+				<div id='map'></div>
+			</main>
+		);
+	}
 }
 
 export default App;
