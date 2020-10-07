@@ -39,7 +39,20 @@ class App extends React.Component {
 	findAddress() {
 		axios.get('http://localhost:3000/weather-fetcher/server?location=' + this.state.location[0] + ',' + this.state.location[1])
 			.then(response => {
-				this.setState({locationName: response.data.address.city});
+				let address = response.data.address;
+
+				if (address.city !== undefined) {
+					this.setState({locationName: address.city});
+				} else if (address.village !== undefined) {
+					this.setState({locationName: address.village});
+				} else if (address.hamlet !== undefined) {
+					this.setState({locationName: address.hamlet});
+				} else if (address.municipality !== undefined) {
+					this.setState({locationName: address.municipality});
+				} else {
+					this.setState({locationName: address.state});
+				}
+
 				this.setMapView();
 			});
 	}
@@ -70,7 +83,10 @@ class App extends React.Component {
 		this.map = leaflet.map('map');
 		leaflet.control.scale().addTo(this.map);
 		
-		//this.map.onclick = (event) => console.log(event.latlng);
+		this.map.on('click', (event) => {
+			this.setState({location: [event.latlng.lat, event.latlng.lng]});
+			this.findAddress();
+		});
 
 		this.geolocate();
 	}
