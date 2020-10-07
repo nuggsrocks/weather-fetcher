@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import leaflet from 'leaflet';
 import overcastImg from '../img/overcast.jpeg';
 import sunnyImg from '../img/sunny.jpg';
@@ -18,6 +19,7 @@ class App extends React.Component {
 		this.geolocate = this.geolocate.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.setMapView = this.setMapView.bind(this);
+		this.findAddress = this.findAddress.bind(this);
 
 		this.map = null;
 		this.marker = null;
@@ -28,7 +30,6 @@ class App extends React.Component {
 			navigator.geolocation.getCurrentPosition(position => {
 				this.setState({location: [position.coords.latitude, position.coords.longitude]});
 				this.findAddress();
-				this.setMapView();
 			}, error => console.error(error));
 		} else {
 			this.setState({weather: undefined});
@@ -36,7 +37,11 @@ class App extends React.Component {
 	}
 
 	findAddress() {
-		
+		axios.get('http://localhost:3000/weather-fetcher/server?location=' + this.state.location[0] + ',' + this.state.location[1])
+			.then(response => {
+				this.setState({locationName: response.data.address.city});
+				this.setMapView();
+			});
 	}
 
 	setMapView() {
@@ -52,15 +57,6 @@ class App extends React.Component {
 		}
 
 		this.marker = leaflet.marker(this.state.location).bindPopup('Your location').addTo(this.map);
-
-		this.map.on('click', event => {
-			let coords = event.latlng;
-			let lat = Math.round(coords.lat * 1000) / 1000;
-			let lng = Math.round(coords.lng * 1000) / 1000;
-			this.setState({location: [lat, lng]});
-			this.findAddress();
-			this.setMapView();
-		});
 		
 	}
 
@@ -73,6 +69,9 @@ class App extends React.Component {
 	componentDidMount() {
 		this.map = leaflet.map('map');
 		leaflet.control.scale().addTo(this.map);
+		
+		//this.map.onclick = (event) => console.log(event.latlng);
+
 		this.geolocate();
 	}
 
