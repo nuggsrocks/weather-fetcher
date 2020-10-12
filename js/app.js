@@ -20,6 +20,7 @@ class App extends React.Component {
 		this.handleChange = this.handleChange.bind(this);
 		this.setMapView = this.setMapView.bind(this);
 		this.findAddress = this.findAddress.bind(this);
+		this.findWeather = this.findWeather.bind(this);
 
 		this.map = null;
 		this.marker = null;
@@ -27,7 +28,9 @@ class App extends React.Component {
 
 	geolocate() {
 		if (navigator.geolocation) {
+			console.log('fetching current position....');
 			navigator.geolocation.getCurrentPosition(position => {
+				console.log('postion found...');
 				this.setState({location: [position.coords.latitude, position.coords.longitude]});
 				this.findAddress();
 			}, error => console.error(error));
@@ -37,8 +40,10 @@ class App extends React.Component {
 	}
 
 	findAddress() {
-		axios.get('http://localhost:3000/weather-fetcher/server?location=' + this.state.location[0] + ',' + this.state.location[1])
+		console.log('reverse geocoding...');
+		axios.get('http://localhost:3000/server/geocoding?location=' + this.state.location[0] + ',' + this.state.location[1])
 			.then(response => {
+				console.log('found address...');
 				let address = response.data.address;
 
 				if (address.city !== undefined) {
@@ -54,6 +59,17 @@ class App extends React.Component {
 				}
 
 				this.setMapView();
+
+				this.findWeather();
+			});
+	}
+
+	findWeather() {
+		console.log('searching for weather information...');
+		axios.get('http://localhost:3000/server/weather')
+			.then(response => {
+				console.log('found weather...');
+				this.setState({weather: response.data.properties});
 			});
 	}
 
@@ -125,14 +141,7 @@ class App extends React.Component {
 
 					</article>
 				}
-				{
-					weather !== null && weather.location === undefined &&
-					<article>
-						<header>
-							<h2>There was an unknown error!</h2>
-						</header>
-					</article>
-				}
+				
 
 				<div id='map'></div>
 			</main>
