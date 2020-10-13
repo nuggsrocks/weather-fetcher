@@ -5,6 +5,7 @@ $light: #fffef5;
 body {
 	margin: 0;
 	background-color: $dark;
+	font-family: 'Kumbh Sans', sans-serif;
 }
 
 div#root {
@@ -40,7 +41,6 @@ input, button {
 	display: inline-block;
 	font: {
 		size: 2rem;
-		family: 'Kumbh Sans', sans-serif;
 	}
 	width: 100%;
 }
@@ -82,28 +82,16 @@ article {
 		h1 {
 			font: {
 				family: 'EB Garamond', serif;
-				size: 5rem;
+				size: 6rem;
 			}
 			margin: 0;
-			line-height: 10rem;
+			line-height: 12rem;
 		}
 	}
 
 	
 
 	div {
-
-		span {
-			font: {
-				family: 'Kumbh Sans', sans-serif;
-				size: 2.5rem;
-			}
-			line-height: 5rem;
-			&:nth-child(1) {
-				font-weight: bolder;
-			}
-		}
-
 		&.spacer {
 			height: 0;
 			border: {
@@ -120,6 +108,33 @@ article {
 				border-color: $medium;
 			}
 		}
+	}
+
+	section {
+		div {
+			font-size: 3rem;
+			line-height: 8rem;
+
+			h2 {
+				font-size: 4rem;
+				margin: 0;
+			}
+
+			span {
+				font-weight: bold;
+			}
+
+			&.loading {
+				margin: 50px auto;
+				border: 20px solid black;
+				border-radius: 50%;
+				border-top: 20px solid white;
+				width: 10vw;
+				height: 10vw;
+				animation: spin linear 1s infinite;
+			}
+		}
+
 	}
 }
 
@@ -154,3 +169,7 @@ div#map {
 }
 
 
+@keyframes spin {
+	0% {transform: rotate(0);}
+	100% {transform: rotate(360deg);}
+}

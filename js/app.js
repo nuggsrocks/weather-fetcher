@@ -66,9 +66,10 @@ class App extends React.Component {
 
 	findWeather() {
 		console.log('searching for weather information...');
-		axios.get('http://localhost:3000/server/weather')
+		axios.get('http://localhost:3000/server/weather?coords=' + this.state.location[0] + ',' + this.state.location[1])
 			.then(response => {
 				console.log('found weather...');
+				console.log(response);
 				this.setState({weather: response.data.properties});
 			});
 	}
@@ -100,7 +101,11 @@ class App extends React.Component {
 		leaflet.control.scale().addTo(this.map);
 		
 		this.map.on('click', (event) => {
-			this.setState({location: [event.latlng.lat, event.latlng.lng]});
+			this.setState({
+				location: [event.latlng.lat, event.latlng.lng],
+				locationName: '',
+				weather: null
+			});
 			this.findAddress();
 		});
 
@@ -108,7 +113,7 @@ class App extends React.Component {
 	}
 
 	render() {
-		const weather = this.state.weather;
+		let weather = this.state.weather;
 
 
 
@@ -138,9 +143,44 @@ class App extends React.Component {
 						
 						<div className='spacer'/>
 
+						{
+							weather === null &&
+							<section>
+								<div className='loading'/>
+							</section>
+						}
+
+						{
+							weather !== null && weather !== undefined &&
+							<section>
+								<div>
+									<h2>{weather.periods[0].shortForecast}</h2>
+								</div>
+								<div>
+									<span>Temperature:&nbsp;</span>
+									{weather.periods[0].temperature}&deg;F
+								</div>
+								<div>
+									<span>Wind:&nbsp;</span>
+									{weather.periods[0].windSpeed + ' ' + weather.periods[0].windDirection}
+								</div>
+							</section>
+							
+						}
+
+						{
+							weather === undefined && 
+							<section>
+								<div>
+									<span>There was an error processing your request. Try again in a sec?</span>
+								</div>
+							</section>
+						}
+
 
 					</article>
 				}
+				
 				
 
 				<div id='map'></div>
