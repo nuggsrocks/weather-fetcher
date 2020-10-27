@@ -57,7 +57,6 @@ module.exports = env => {
 			new HtmlWebpackPlugin({
 				template: 'index.html',
 				filename: 'index.html',
-				title: 'Webpack Project',
 				meta: {
 					charset: 'utf-8',
 					viewport: 'width=device-width,initial-scale=1.0'
