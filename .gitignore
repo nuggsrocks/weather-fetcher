@@ -1,4 +1,7 @@
-node_modules/**
-public/**
+node_modules/
+public/
 
-back-end/**
+back-end/
+
+.env*
+ecosystem.config.js
