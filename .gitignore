@@ -1,7 +1,5 @@
 node_modules/
 public/
 
-back-end/
-
 .env*
 ecosystem.config.js
