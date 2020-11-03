@@ -1,9 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 import leaflet from 'leaflet';
-import overcastImg from '../img/overcast.jpeg';
-import sunnyImg from '../img/sunny.jpg';
-
 
 
 class App extends React.Component {
@@ -26,6 +23,7 @@ class App extends React.Component {
 		this.marker = null;
 	}
 
+
 	geolocate() {
 		if (navigator.geolocation) {
 			console.log('fetching current position....');
@@ -41,37 +39,42 @@ class App extends React.Component {
 
 	findAddress() {
 		console.log('reverse geocoding...');
-		axios.get('http://localhost:3000/server/geocoding?location=' + this.state.location[0] + ',' + this.state.location[1])
+		axios.get(`http://${process.env.HOST}:${process.env.PORT}/server/geocoding?location=${this.state.location[0]},${this.state.location[1]}`)
 			.then(response => {
 				console.log('found address...');
 				let address = response.data.address;
 
+				let locationName;
+
 				if (address.city !== undefined) {
-					this.setState({locationName: address.city});
+					locationName = address.city;
 				} else if (address.village !== undefined) {
-					this.setState({locationName: address.village});
+					locationName = address.village;
 				} else if (address.hamlet !== undefined) {
-					this.setState({locationName: address.hamlet});
+					locationName = address.hamlet;
 				} else if (address.municipality !== undefined) {
-					this.setState({locationName: address.municipality});
+					locationName = address.municipality;
 				} else {
-					this.setState({locationName: address.state});
+					locationName = address.state;
 				}
+
+				this.setState({locationName});
 
 				this.setMapView();
 
 				this.findWeather();
-			});
+			})
+			.catch(e => console.error(e));
 	}
 
 	findWeather() {
 		console.log('searching for weather information...');
-		axios.get('http://localhost:3000/server/weather?coords=' + this.state.location[0] + ',' + this.state.location[1])
+		axios.get(`http://${process.env.HOST}:${process.env.PORT}/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
 			.then(response => {
 				console.log('found weather...');
-				console.log(response);
 				this.setState({weather: response.data.properties});
-			});
+			})
+			.catch(e => console.error(e));
 	}
 
 	setMapView() {
