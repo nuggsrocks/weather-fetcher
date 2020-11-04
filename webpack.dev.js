@@ -20,7 +20,7 @@ module.exports = merge(common, {
 	},
 	plugins: [
 		new webpack.EnvironmentPlugin({
-			HOST: 'localhost',
+			HOST: 'http://localhost',
 			PORT: 8080
 		})
 	]

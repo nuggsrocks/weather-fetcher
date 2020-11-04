@@ -24,6 +24,7 @@ class App extends React.Component {
 
 
 	geolocate() {
+		console.log(navigator);
 		if (navigator.geolocation) {
 			console.log('fetching current position....');
 			navigator.geolocation.getCurrentPosition(position => {
@@ -39,7 +40,7 @@ class App extends React.Component {
 	findAddress() {
 		console.log('reverse geocoding...');
 		import('axios').then(({default: axios}) => {
-			axios.get(`http${process.env.HOST === '0.0.0.0' ? 's' : ''}://${process.env.HOST}:${process.env.PORT}/server/geocoding?location=${this.state.location[0]},${this.state.location[1]}`)
+			axios.get(`${process.env.HOST}:${process.env.PORT === 80 ? '' : process.env.PORT}/server/geocoding?location=${this.state.location[0]},${this.state.location[1]}`)
 				.then(response => {
 					console.log('found address...');
 					let address = response.data.address;
@@ -71,7 +72,7 @@ class App extends React.Component {
 	findWeather() {
 		console.log('searching for weather information...');
 		import('axios').then(({default: axios}) => {
-			axios.get(`http${process.env.HOST === '0.0.0.0' ? 's' : ''}://${process.env.HOST}:${process.env.PORT}/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
+			axios.get(`${process.env.HOST}:${process.env.PORT === 80 ? '' : process.env.PORT}/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
 				.then(response => {
 					console.log('found weather...');
 					this.setState({weather: response.data.properties});
@@ -122,12 +123,14 @@ class App extends React.Component {
 			this.geolocate();
 
 		});
+
+
 	}
 
 	render() {
 		let weather = this.state.weather;
 
-
+		
 
 		return (
 			<main style={{backgroundImage: `url(${this.state.weatherImage})`}}>

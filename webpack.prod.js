@@ -26,8 +26,8 @@ module.exports = merge(common, {
 			chunkFilename: '[id].css' 
 		}),
 		new webpack.EnvironmentPlugin({
-			HOST: 'localhost',
-			PORT: '8080'
+			HOST: 'https://desolate-cove-55536.herokuapp.com',
+			PORT: 80
 		})
 	],
 	optimization: {
