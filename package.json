@@ -7,6 +7,8 @@
 		"build:prod": "rm -rf public;webpack --config webpack.prod.js",
 		"start:dev": "pm2 start ecosystem.config.js --env=dev",
 		"start:test": "pm2 start ecosystem.config.js --env=test",
+		"start": "node server.js",
+		"heroku-postbuild": "npm run build:prod",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],

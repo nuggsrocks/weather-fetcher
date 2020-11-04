@@ -7,7 +7,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = merge(common, {
 	mode: 'production',
-	devtool: 'source-map',
 	watch: false,
 	module: {
 		rules: [
@@ -27,8 +26,8 @@ module.exports = merge(common, {
 			chunkFilename: '[id].css' 
 		}),
 		new webpack.EnvironmentPlugin({
-			HOST: 'localhost',
-			PORT: '8080'
+			HOST: '0.0.0.0',
+			PORT: '8000'
 		})
 	],
 	optimization: {
