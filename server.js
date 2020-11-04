@@ -4,9 +4,9 @@ const app = express();
 const axios = require('axios');
 const cors = require('cors');
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8080;
 
-const host = process.env.HOST || '0.0.0.0';
+const host = process.env.HOST || 'localhost';
 
 app.use(express.static(__dirname + '/public'));
 

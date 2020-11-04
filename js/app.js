@@ -39,7 +39,7 @@ class App extends React.Component {
 	findAddress() {
 		console.log('reverse geocoding...');
 		import('axios').then(({default: axios}) => {
-			axios.get(`http://${process.env.HOST}:${process.env.PORT}/server/geocoding?location=${this.state.location[0]},${this.state.location[1]}`)
+			axios.get(`http${process.env.HOST === '0.0.0.0' ? 's' : ''}://${process.env.HOST}:${process.env.PORT}/server/geocoding?location=${this.state.location[0]},${this.state.location[1]}`)
 				.then(response => {
 					console.log('found address...');
 					let address = response.data.address;
@@ -71,7 +71,7 @@ class App extends React.Component {
 	findWeather() {
 		console.log('searching for weather information...');
 		import('axios').then(({default: axios}) => {
-			axios.get(`http://${process.env.HOST}:${process.env.PORT}/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
+			axios.get(`http${process.env.HOST === '0.0.0.0' ? 's' : ''}://${process.env.HOST}:${process.env.PORT}/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
 				.then(response => {
 					console.log('found weather...');
 					this.setState({weather: response.data.properties});
