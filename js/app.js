@@ -1,6 +1,5 @@
 import React from 'react';
-import axios from 'axios';
-import leaflet from 'leaflet';
+import '../scss/index.scss';
 
 
 class App extends React.Component {
@@ -39,57 +38,64 @@ class App extends React.Component {
 
 	findAddress() {
 		console.log('reverse geocoding...');
-		axios.get(`http://${process.env.HOST}:${process.env.PORT}/server/geocoding?location=${this.state.location[0]},${this.state.location[1]}`)
-			.then(response => {
-				console.log('found address...');
-				let address = response.data.address;
+		import('axios').then(({default: axios}) => {
+			axios.get(`http://${process.env.HOST}:${process.env.PORT}/server/geocoding?location=${this.state.location[0]},${this.state.location[1]}`)
+				.then(response => {
+					console.log('found address...');
+					let address = response.data.address;
 
-				let locationName;
+					let locationName;
 
-				if (address.city !== undefined) {
-					locationName = address.city;
-				} else if (address.village !== undefined) {
-					locationName = address.village;
-				} else if (address.hamlet !== undefined) {
-					locationName = address.hamlet;
-				} else if (address.municipality !== undefined) {
-					locationName = address.municipality;
-				} else {
-					locationName = address.state;
-				}
+					if (address.city !== undefined) {
+						locationName = address.city;
+					} else if (address.village !== undefined) {
+						locationName = address.village;
+					} else if (address.hamlet !== undefined) {
+						locationName = address.hamlet;
+					} else if (address.municipality !== undefined) {
+						locationName = address.municipality;
+					} else {
+						locationName = address.state;
+					}
 
-				this.setState({locationName});
+					this.setState({locationName});
 
-				this.setMapView();
+					this.setMapView();
 
-				this.findWeather();
-			})
-			.catch(e => console.error(e));
+					this.findWeather();
+				})
+				.catch(e => console.error(e));
+		});
 	}
 
 	findWeather() {
 		console.log('searching for weather information...');
-		axios.get(`http://${process.env.HOST}:${process.env.PORT}/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
-			.then(response => {
-				console.log('found weather...');
-				this.setState({weather: response.data.properties});
-			})
-			.catch(e => console.error(e));
+		import('axios').then(({default: axios}) => {
+			axios.get(`http://${process.env.HOST}:${process.env.PORT}/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
+				.then(response => {
+					console.log('found weather...');
+					this.setState({weather: response.data.properties});
+				})
+				.catch(e => console.error(e));
+		});
 	}
 
 	setMapView() {
-		
-		this.map.setView(this.state.location, 10);
-		leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			maxZoom: 19,
-			attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-		}).addTo(this.map);
 
-		if (this.marker !== null) {
-			this.marker.remove();
-		}
+		import('leaflet').then(({default: leaflet}) => {
+			this.map.setView(this.state.location, 10);
+			leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				maxZoom: 19,
+				attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+			}).addTo(this.map);
 
-		this.marker = leaflet.marker(this.state.location).bindPopup('Your location').addTo(this.map);
+			if (this.marker !== null) {
+				this.marker.remove();
+			}
+
+			this.marker = leaflet.marker(this.state.location).bindPopup('Your location').addTo(this.map);
+
+		});
 		
 	}
 
@@ -100,19 +106,22 @@ class App extends React.Component {
 	}
 
 	componentDidMount() {
-		this.map = leaflet.map('map');
-		leaflet.control.scale().addTo(this.map);
-		
-		this.map.on('click', (event) => {
-			this.setState({
-				location: [event.latlng.lat, event.latlng.lng],
-				locationName: '',
-				weather: null
+		import('leaflet').then(({default: leaflet}) => {
+			this.map = leaflet.map('map');
+			leaflet.control.scale().addTo(this.map);
+			
+			this.map.on('click', (event) => {
+				this.setState({
+					location: [event.latlng.lat, event.latlng.lng],
+					locationName: '',
+					weather: null
+				});
+				this.findAddress();
 			});
-			this.findAddress();
-		});
 
-		this.geolocate();
+			this.geolocate();
+
+		});
 	}
 
 	render() {
@@ -192,4 +201,6 @@ class App extends React.Component {
 	}
 }
 
-export default App;
+import('react-dom').then(({default: ReactDOM}) => {
+	ReactDOM.render(<App/>, document.querySelector('div#root'));
+});
