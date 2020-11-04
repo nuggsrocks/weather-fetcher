@@ -26,8 +26,8 @@ module.exports = merge(common, {
 			chunkFilename: '[id].css' 
 		}),
 		new webpack.EnvironmentPlugin({
-			HOST: '0.0.0.0',
-			PORT: '8000'
+			HOST: 'localhost',
+			PORT: '8080'
 		})
 	],
 	optimization: {
