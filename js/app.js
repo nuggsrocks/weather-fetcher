@@ -8,11 +8,10 @@ class App extends React.Component {
 		this.state = {
 			input: '',
 			weather: null,
-			weatherImage: '',
 			location: '',
 			locationName: ''
 		}
-		this.geolocate = this.geolocate.bind(this);
+		this.locate = this.locate.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.setMapView = this.setMapView.bind(this);
 		this.findAddress = this.findAddress.bind(this);
@@ -23,8 +22,7 @@ class App extends React.Component {
 	}
 
 
-	geolocate() {
-		console.log(navigator);
+	locate() {
 		if (navigator.geolocation) {
 			console.log('fetching current position....');
 			navigator.geolocation.getCurrentPosition(position => {
@@ -40,7 +38,7 @@ class App extends React.Component {
 	findAddress() {
 		console.log('reverse geocoding...');
 		import('axios').then(({default: axios}) => {
-			axios.get(`${process.env.HOST}:${process.env.PORT === 80 ? '' : process.env.PORT}/server/geocoding?location=${this.state.location[0]},${this.state.location[1]}`)
+			axios.get(`${process.env.URL}/server/geocoding?location=${this.state.location[0]},${this.state.location[1]}`)
 				.then(response => {
 					console.log('found address...');
 					let address = response.data.address;
@@ -49,12 +47,12 @@ class App extends React.Component {
 
 					if (address.city !== undefined) {
 						locationName = address.city;
-					} else if (address.village !== undefined) {
-						locationName = address.village;
-					} else if (address.hamlet !== undefined) {
-						locationName = address.hamlet;
-					} else if (address.municipality !== undefined) {
-						locationName = address.municipality;
+					} else if (address['village'] !== undefined) {
+						locationName = address['village'];
+					} else if (address['hamlet'] !== undefined) {
+						locationName = address['hamlet'];
+					} else if (address['municipality'] !== undefined) {
+						locationName = address['municipality'];
 					} else {
 						locationName = address.state;
 					}
@@ -72,7 +70,7 @@ class App extends React.Component {
 	findWeather() {
 		console.log('searching for weather information...');
 		import('axios').then(({default: axios}) => {
-			axios.get(`${process.env.HOST}:${process.env.PORT === 80 ? '' : process.env.PORT}/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
+			axios.get(`${process.env.URL}/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
 				.then(response => {
 					console.log('found weather...');
 					this.setState({weather: response.data.properties});
@@ -120,7 +118,7 @@ class App extends React.Component {
 				this.findAddress();
 			});
 
-			this.geolocate();
+			this.locate();
 
 		});
 
@@ -133,11 +131,11 @@ class App extends React.Component {
 		
 
 		return (
-			<main style={{backgroundImage: `url(${this.state.weatherImage})`}}>
+			<main>
 
 				<div>
 					<input type={'text'} value={this.state.input} onChange={this.handleChange} />
-					<button onClick={this.fetchWeather}>
+					<button onClick={this.findWeather}>
 						Search
 					</button>
 				</div>
@@ -169,15 +167,15 @@ class App extends React.Component {
 							weather !== null && weather !== undefined &&
 							<section>
 								<div>
-									<h2>{weather.periods[0].shortForecast}</h2>
+									<h2>{weather['periods'][0]['shortForecast']}</h2>
 								</div>
 								<div>
 									<span>Temperature:&nbsp;</span>
-									{weather.periods[0].temperature}&deg;F
+									{weather['periods'][0].temperature}&deg;F
 								</div>
 								<div>
 									<span>Wind:&nbsp;</span>
-									{weather.periods[0].windSpeed + ' ' + weather.periods[0].windDirection}
+									{weather['periods'][0]['windSpeed'] + ' ' + weather['periods'][0]['windDirection']}
 								</div>
 							</section>
 							
@@ -198,7 +196,7 @@ class App extends React.Component {
 				
 				
 
-				<div id='map'></div>
+				<div id='map'/>
 			</main>
 		);
 	}

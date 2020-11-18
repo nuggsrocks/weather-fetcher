@@ -4,7 +4,7 @@ const webpack = require('webpack');
 
 module.exports = merge(common, {
 	mode: 'development',
-	devtool: 'inline-dev-tool',
+	devtool: 'inline-source-map',
 	watch: true,
 	module: {
 		rules: [
@@ -20,8 +20,7 @@ module.exports = merge(common, {
 	},
 	plugins: [
 		new webpack.EnvironmentPlugin({
-			HOST: 'http://localhost',
-			PORT: 8080
+			URL: 'http://localhost:8080'
 		})
 	]
 });
