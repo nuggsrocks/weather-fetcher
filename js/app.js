@@ -8,14 +8,18 @@ class App extends React.Component {
 		this.state = {
 			input: '',
 			weather: null,
-			location: '',
-			locationName: ''
+			location: undefined,
+			locationName: '',
+			error: false
 		}
 		this.locate = this.locate.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.setMapView = this.setMapView.bind(this);
 		this.findAddress = this.findAddress.bind(this);
+		this.findCoords = this.findCoords.bind(this);
 		this.findWeather = this.findWeather.bind(this);
+		this.handleError = this.handleError.bind(this);
+		this.displayWeather = this.displayWeather.bind(this);
 
 		this.map = null;
 		this.marker = null;
@@ -25,39 +29,50 @@ class App extends React.Component {
 	locate() {
 		if (navigator.geolocation) {
 			console.log('fetching current position....');
+
 			navigator.geolocation.getCurrentPosition(position => {
 				console.log('postion found...');
 				this.setState({location: [position.coords.latitude, position.coords.longitude]});
 				this.findAddress();
-			}, error => console.error(error));
+			}, error => {
+					console.error(error);
+					this.setState({
+						error
+					});
+				},
+				{
+					timeout: 500
+				});
 		} else {
-			this.setState({weather: undefined});
+			this.setState({
+				error: 'Geolocation not supported'
+			});
 		}
 	}
 
 	findAddress() {
 		console.log('reverse geocoding...');
 		import('axios').then(({default: axios}) => {
-			axios.get(`${process.env.URL}/server/geocoding?location=${this.state.location[0]},${this.state.location[1]}`)
+			axios.get(`https://127.0.0.1/server/reverse-geo?coords=${this.state.location[0]},${this.state.location[1]}`)
 				.then(response => {
 					console.log('found address...');
-					let address = response.data.address;
+					console.log(response.data);
 
 					let locationName;
 
-					if (address.city !== undefined) {
-						locationName = address.city;
-					} else if (address['village'] !== undefined) {
-						locationName = address['village'];
-					} else if (address['hamlet'] !== undefined) {
-						locationName = address['hamlet'];
-					} else if (address['municipality'] !== undefined) {
-						locationName = address['municipality'];
-					} else {
-						locationName = address.state;
+					if (response.data.address.hasOwnProperty('aeroway')) {
+						locationName = response.data.address.aeroway;
+					} else if (response.data.address.hasOwnProperty('hamlet')) {
+						locationName = response.data.address.hamlet;
+					} else if (response.data.address.hasOwnProperty('suburb')) {
+						locationName = response.data.address.suburb;
+					} else if (response.data.address.hasOwnProperty('city')) {
+						locationName = response.data.address.city;
 					}
 
-					this.setState({locationName});
+					this.setState({
+						locationName
+					});
 
 					this.setMapView();
 
@@ -67,12 +82,32 @@ class App extends React.Component {
 		});
 	}
 
+	findCoords() {
+		import('axios').then(({default: axios}) => {
+			axios.get('https://127.0.0.1/server/geocode?q=' + this.state.input)
+				.then(response => {
+					console.log(response.data);
+					this.setState({
+						location: [response.data.lat, response.data.lon]
+					});
+
+					this.findAddress();
+				});
+		});
+	}
+
 	findWeather() {
 		console.log('searching for weather information...');
+
+		if (this.state.error) {
+			this.setState({
+				error: false
+			});
+		}
+
 		import('axios').then(({default: axios}) => {
-			axios.get(`${process.env.URL}/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
+			axios.get(`https://127.0.0.1/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
 				.then(response => {
-					console.log('found weather...');
 					this.setState({weather: response.data.properties});
 				})
 				.catch(e => console.error(e));
@@ -98,10 +133,19 @@ class App extends React.Component {
 		
 	}
 
-	handleChange(e) {
+	handleChange(event) {
 		this.setState({
-			input: e.target.value
+			input: event.target.value
 		});
+	}
+
+	handleError() {
+		return <article>
+			<header>
+				<h1>Error</h1>
+				<code>&quot;{this.state.error.message}&quot;</code>
+			</header>
+		</article>
 	}
 
 	componentDidMount() {
@@ -125,73 +169,67 @@ class App extends React.Component {
 
 	}
 
-	render() {
-		let weather = this.state.weather;
+	displayLoadingScreen() {
+		return <article>
+			<header>
+				<h1>Loading...</h1>
+			</header>
+		</article>
+	}
 
-		
+	displayWeather() {
+		const {weather} = this.state;
+
+		return <article>
+			<header>
+				<h1>{this.state.locationName}</h1>
+			</header>
+
+			<div className='spacer'/>
+
+			<section>
+				<div>
+					<h2>{weather['periods'][0]['shortForecast']}</h2>
+				</div>
+				<div>
+					<span>Temperature: </span>
+					{weather['periods'][0].temperature}&deg;F
+				</div>
+				<div>
+					<span>Wind:&nbsp;</span>
+					{weather['periods'][0]['windSpeed'] + ' ' + weather['periods'][0]['windDirection']}
+				</div>
+			</section>
+
+
+		</article>
+	}
+
+
+
+	render() {
+		let {weather, error} = this.state;
 
 		return (
 			<main>
 
 				<div>
 					<input type={'text'} value={this.state.input} onChange={this.handleChange} />
-					<button onClick={this.findWeather}>
+					<button onClick={this.findCoords}>
 						Search
 					</button>
 				</div>
+
 				{
-					this.state.locationName === '' &&
-					<article>
-						<header>
-							<h1>Loading...</h1>
-						</header>
-					</article>
+					error !== false && this.handleError()
 				}
+
 				{
-					this.state.locationName !== '' &&
-					<article>
-						<header>
-							<h1>{this.state.locationName}</h1>
-						</header>
-						
-						<div className='spacer'/>
+					error === false && weather === null && this.displayLoadingScreen()
+				}
 
-						{
-							weather === null &&
-							<section>
-								<div className='loading'/>
-							</section>
-						}
-
-						{
-							weather !== null && weather !== undefined &&
-							<section>
-								<div>
-									<h2>{weather['periods'][0]['shortForecast']}</h2>
-								</div>
-								<div>
-									<span>Temperature:&nbsp;</span>
-									{weather['periods'][0].temperature}&deg;F
-								</div>
-								<div>
-									<span>Wind:&nbsp;</span>
-									{weather['periods'][0]['windSpeed'] + ' ' + weather['periods'][0]['windDirection']}
-								</div>
-							</section>
-							
-						}
-
-						{
-							weather === undefined && 
-							<section>
-								<div>
-									<span>There was an error processing your request. Try again in a sec?</span>
-								</div>
-							</section>
-						}
-
-
-					</article>
+				{
+					error === false && weather && this.displayWeather()
 				}
 				
 				

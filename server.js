@@ -19,22 +19,25 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(cors());
 
+const LOCATION_API = 'https://nominatim.openstreetmap.org';
 
-let locationApiUrl = 'https://us1.locationiq.com/v1/reverse.php';
-let locationApiKey = process.env.LOCATION_API_KEY;
-
-async function fetchReverseGeocoding(location) {
+async function searchForLocation(queryString) {
 	try {
+	    let res = await axios.get(`${LOCATION_API}/search?q=${queryString}&format=json`);
 
-		let locationArray = location.split(',');
+	    return res.data[0];
+	} catch(e) {
+	    console.error(e);
+	}
+}
 
-		let response = await axios.get(`${locationApiUrl}?key=${locationApiKey}&lat=${locationArray[0]}&lon=${locationArray[1]}&format=json`);
+async function reverseGeocode(coordinates) {
+	try {
+	    let response = await axios.get(`${LOCATION_API}/reverse?lat=${coordinates[0]}&lon=${coordinates[1]}&format=json`);
 
-		return response;
-		
-		} catch(e) {
-		// statements
-		console.log(e);
+	    return response.data;
+	} catch(e) {
+	    console.error(e);
 	}
 }
 
@@ -44,10 +47,15 @@ async function fetchWeatherInfo (coordinates) {
 	try {
 		let coords = coordinates.replace(',', '%2C');
 		let response = await axios.get(`${weatherApiUrl}/points/${coords}`, {
-			headers: {accept: 'application/geo+json'}
+			headers: {
+				'User-Agent': '(mfweatherapp, nuggsrocks@yahoo.com)',
+				accept: 'application/geo+json'
+			}
 		});
 
-		let forecastResponse = await axios.get(response.data.properties.forecast);
+		let forecastUrl = response.data.properties.forecast;
+
+		let forecastResponse = await axios.get(forecastUrl);
 
 	
 		return forecastResponse.data;
@@ -58,9 +66,14 @@ async function fetchWeatherInfo (coordinates) {
 	}
 }
 
-app.route('/server/geocoding').get((request, response) => {
-	fetchReverseGeocoding(request.query.location).then(results => response.send(results.data));
+app.route('/server/geocode').get((req, res) => {
+	searchForLocation(req.query.q).then(results => res.send(results));
 });
+
+app.route('/server/reverse-geo').get((req, res) => {
+	let coords = req.query.coords.split(',');
+	reverseGeocode(coords).then(result => res.send(result));
+})
 
 app.route('/server/weather').get((req, res) => {
 	fetchWeatherInfo(req.query.coords).then(data => res.send(data));
