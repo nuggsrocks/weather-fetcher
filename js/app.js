@@ -64,7 +64,7 @@ class App extends React.Component {
 
 					let locationObject = response.data.address;
 
-					Object.keys(response.data.address).forEach(key => {
+					Object.keys(locationObject).forEach(key => {
 						if (keyRegex.test(key)) {
 							locationNames.push(locationObject[key]);
 						}
@@ -110,9 +110,17 @@ class App extends React.Component {
 		import('axios').then(({default: axios}) => {
 			axios.get(`https://127.0.0.1/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
 				.then(response => {
+					if (response.data.properties === undefined) {
+						throw {message: 'Weather could not be obtained for this location. Weather information is only available inside the US.'};
+					}
 					this.setState({weather: response.data.properties});
 				})
-				.catch(e => console.error(e));
+				.catch(e => {
+					console.error(e);
+					this.setState({
+						error: e
+					});
+				});
 		});
 	}
 
@@ -145,7 +153,7 @@ class App extends React.Component {
 		return <article>
 			<header>
 				<h1>Error</h1>
-				<code>&quot;{this.state.error.message}&quot;</code>
+				<code>{this.state.error.message}</code>
 			</header>
 		</article>
 	}
