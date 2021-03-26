@@ -58,17 +58,19 @@ class App extends React.Component {
 					console.log('found address...');
 					console.log(response.data);
 
-					let locationName;
+					let locationNames = [];
 
-					if (response.data.address.hasOwnProperty('aeroway')) {
-						locationName = response.data.address.aeroway;
-					} else if (response.data.address.hasOwnProperty('hamlet')) {
-						locationName = response.data.address.hamlet;
-					} else if (response.data.address.hasOwnProperty('suburb')) {
-						locationName = response.data.address.suburb;
-					} else if (response.data.address.hasOwnProperty('city')) {
-						locationName = response.data.address.city;
-					}
+					let keyRegex = /(aeroway|hamlet|suburb|town|municipality|city|county)/;
+
+					let locationObject = response.data.address;
+
+					Object.keys(response.data.address).forEach(key => {
+						if (keyRegex.test(key)) {
+							locationNames.push(locationObject[key]);
+						}
+					});
+
+					let locationName = locationNames[0];
 
 					this.setState({
 						locationName
