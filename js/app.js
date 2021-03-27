@@ -111,7 +111,7 @@ class App extends React.Component {
 			axios.get(`https://127.0.0.1/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
 				.then(response => {
 					if (response.data.properties === undefined) {
-						throw {message: 'Weather could not be obtained for this location. Weather information is only available inside the US.'};
+						throw {message: 'Weather could not be obtained for this location. Locations must be within the United States and recognized by the weather.gov database. Please try again.'};
 					}
 					this.setState({weather: response.data.properties});
 				})

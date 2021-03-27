@@ -1,12 +1,13 @@
 const express = require('express');
 const app = express();
-
+const https = require('https');
+const fs = require('fs');
 const axios = require('axios');
 const cors = require('cors');
 
-const port = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
-const host = process.env.HOST || '0.0.0.0';
+const HOST = process.env.HOST || '127.0.0.1';
 
 app.use(express.static(__dirname + '/public'));
 
@@ -41,12 +42,11 @@ async function reverseGeocode(coordinates) {
 	}
 }
 
-let weatherApiUrl = 'https://api.weather.gov';
+let WEATHER_API = 'https://api.weather.gov';
 
 async function fetchWeatherInfo (coordinates) {
 	try {
-		let coords = coordinates.replace(',', '%2C');
-		let response = await axios.get(`${weatherApiUrl}/points/${coords}`, {
+		let response = await axios.get(`${WEATHER_API}/points/${coordinates}`, {
 			headers: {
 				'User-Agent': '(mfweatherapp, nuggsrocks@yahoo.com)',
 				accept: 'application/geo+json'
@@ -55,10 +55,20 @@ async function fetchWeatherInfo (coordinates) {
 
 		let forecastUrl = response.data.properties.forecast;
 
-		let forecastResponse = await axios.get(forecastUrl);
+		let forecast;
+
+		if (forecastUrl) {
+			let forecastResponse = await axios.get(forecastUrl);
+			forecast = forecastResponse.data;
+		} else {
+			let forecastZoneResponse = await axios.get(response.data.properties.forecastZone + '/observations');
+			forecast = forecastZoneResponse.data.features[0].properties;
+		}
+
+
 
 	
-		return forecastResponse.data;
+		return forecast;
 
 	} catch(e) {
 		// statements
@@ -83,4 +93,12 @@ app.get('/*', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-app.listen(port, host, () => console.log('************'));
+let keyFilePath = process.env.KEY_PATH;
+let certFilePath = process.env.CERT_PATH;
+
+const key = fs.readFileSync(keyFilePath);
+const cert = fs.readFileSync(certFilePath);
+
+let server = https.createServer({key, cert}, app);
+
+server.listen(PORT, HOST, () => console.log('********** server is listening *********'));
