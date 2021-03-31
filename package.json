@@ -5,7 +5,8 @@
 	"scripts": {
 		"build:dev": "rm -rf public;webpack --config webpack.dev.js",
 		"build:prod": "rm -rf public;webpack --config webpack.prod.js",
-		"start:dev": "pm2 start ecosystem.config.js;pm2 logs"
+		"start:dev": "pm2 start ecosystem.config.js;pm2 logs",
+		"stop:dev": "pm2 delete weather-fetcher"
 	},
 	"keywords": [],
 	"author": "Matthew Fisher <nuggsrocks@yahoo.com>",
