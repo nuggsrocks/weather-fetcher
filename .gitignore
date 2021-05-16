@@ -1,8 +1,7 @@
-node_modules/
-public/
+**/node_modules/
+**/public/
 
-.env*
-ecosystem.config.js
+**.env*
 
 .DS_Store
 .idea
