@@ -24,6 +24,7 @@ module.exports = {
       version: 'detect'
     }
   },
+  ignorePatterns: ['**/node_modules/*', '**/public/*', '**/dist/*'],
   rules: {
   }
 }
