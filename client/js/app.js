@@ -1,52 +1,28 @@
-import React from 'react'
 import '../scss/index.scss'
+import React from 'react'
+import { LocationInput } from './LocationInput'
+import { LoadingIcon } from './LoadingIcon'
+import { ErrorNotification } from './ErrorNotification'
+import { fetchWeather } from './fetchWeather'
+import { locate } from './locate'
 
-class App extends React.Component {
+export class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      input: '',
       weather: null,
-      location: undefined,
+      coords: null,
       locationName: '',
-      error: false
+      error: null
     }
-    this.locate = this.locate.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.setMapView = this.setMapView.bind(this)
     this.findAddress = this.findAddress.bind(this)
     this.findCoords = this.findCoords.bind(this)
-    this.findWeather = this.findWeather.bind(this)
-    this.handleError = this.handleError.bind(this)
     this.displayWeather = this.displayWeather.bind(this)
 
     this.map = null
     this.marker = null
-  }
-
-  locate () {
-    if (navigator.geolocation) {
-      console.log('fetching current position....')
-
-      navigator.geolocation.getCurrentPosition(position => {
-        console.log('postion found...')
-        this.setState(
-          { location: [position.coords.latitude, position.coords.longitude] })
-        this.findAddress()
-      }, error => {
-        console.error(error)
-        this.setState({
-          error
-        })
-      },
-      {
-        timeout: 500
-      })
-    } else {
-      this.setState({
-        error: 'Geolocation not supported'
-      })
-    }
   }
 
   findAddress () {
@@ -84,9 +60,9 @@ class App extends React.Component {
     })
   }
 
-  findCoords () {
+  findCoords (queryString) {
     import('axios').then(({ default: axios }) => {
-      axios.get('/server/geocode?q=' + this.state.input)
+      axios.get('/server/geocode?q=' + queryString)
         .then(response => {
           console.log(response.data)
           this.setState({
@@ -94,33 +70,6 @@ class App extends React.Component {
           })
 
           this.findAddress()
-        })
-    })
-  }
-
-  findWeather () {
-    console.log('searching for weather information...')
-
-    if (this.state.error) {
-      this.setState({
-        error: false
-      })
-    }
-
-    import('axios').then(({ default: axios }) => {
-      axios.get(
-        `/server/weather?coords=${this.state.location[0]},${this.state.location[1]}`)
-        .then(response => {
-          if (response.data.properties === undefined) {
-            throw new Error('Error occurred while fetching weather info.')
-          }
-          this.setState({ weather: response.data.properties })
-        })
-        .catch(e => {
-          console.error(e)
-          this.setState({
-            error: e
-          })
         })
     })
   }
@@ -149,39 +98,19 @@ class App extends React.Component {
     })
   }
 
-  handleError () {
-    return <article>
-      <header>
-        <h1>Error</h1>
-        <code>{this.state.error.message}</code>
-      </header>
-    </article>
-  }
+  async componentDidMount () {
+    try {
+      const position = await locate()
 
-  componentDidMount () {
-    import('leaflet').then(({ default: leaflet }) => {
-      this.map = leaflet.map('map')
-      leaflet.control.scale().addTo(this.map)
+      this.setState({ coords: position.coords })
 
-      this.map.on('click', (event) => {
-        this.setState({
-          location: [event.latlng.lat, event.latlng.lng],
-          locationName: '',
-          weather: null
-        })
-        this.findAddress()
-      })
+      const weather = await fetchWeather(this.state.coords)
 
-      this.locate()
-    })
-  }
-
-  displayLoadingScreen () {
-    return <article>
-      <header>
-        <h1>Loading...</h1>
-      </header>
-    </article>
+      this.setState({ weather })
+    } catch (error) {
+      console.error(error)
+      this.setState({ error })
+    }
   }
 
   displayWeather () {
@@ -218,24 +147,22 @@ class App extends React.Component {
     return (
       <main>
 
-        <div>
-          <input type={'text'} value={this.state.input}
-                 onChange={this.handleChange}/>
-          <button onClick={this.findCoords}>
-            Search
-          </button>
-        </div>
+        <LocationInput
+          handleInput={event => this.setState({ input: event.target.value })}
+          handleClick={() => this.findCoords(this.state.input)}
+          input={this.state.input}
+        />
 
         {
-          error !== false && this.handleError()
+          error !== null && <ErrorNotification error={error}/>
         }
 
         {
-          error === false && weather === null && this.displayLoadingScreen()
+          error === null && weather === null && <LoadingIcon />
         }
 
         {
-          error === false && weather && this.displayWeather()
+          error === null && weather && this.displayWeather()
         }
 
         <div id='map'/>

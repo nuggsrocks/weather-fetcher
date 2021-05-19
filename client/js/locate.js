@@ -1,22 +1,11 @@
-import 'regenerator-runtime/runtime'
-import 'core-js/stable'
-
-export const locate = async (navigator) => {
-  try {
-    return await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(position => {
-        console.log('postion found...')
-        resolve([position.coords.latitude, position.coords.longitude])
-      }, error => {
-        console.error(error)
-        reject(error)
-      },
-      {
-        timeout: 5000
-      })
+export const locate = () => {
+  return new Promise((resolve, reject) => {
+    global.navigator.geolocation.getCurrentPosition(position => {
+      resolve([position.coords.latitude, position.coords.longitude])
+    }, positionError => {
+      reject(positionError)
+    }, {
+      timeout: 5000
     })
-  } catch (e) {
-    console.error(e)
-    return null
-  }
+  })
 }
