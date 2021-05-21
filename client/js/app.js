@@ -2,7 +2,7 @@ import '../scss/index.scss'
 import React from 'react'
 import { LocationInput } from './LocationInput'
 import { LoadingIcon } from './LoadingIcon'
-import { ErrorNotification } from './ErrorNotification'
+import { ErrorDisplay } from './ErrorDisplay'
 import { fetchWeather } from './fetchWeather'
 import { locate } from './locate'
 
@@ -10,68 +10,60 @@ export class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      input: '',
       weather: null,
       coords: null,
       locationName: '',
       error: null
     }
+    this.fetchCoordinates = this.fetchCoordinates.bind(this)
+    this.fetchWeather = this.fetchWeather.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.setMapView = this.setMapView.bind(this)
-    this.findAddress = this.findAddress.bind(this)
-    this.findCoords = this.findCoords.bind(this)
     this.displayWeather = this.displayWeather.bind(this)
 
     this.map = null
     this.marker = null
   }
 
-  findAddress () {
-    console.log('reverse geocoding...')
-    import('axios').then(({ default: axios }) => {
-      axios.get(
-        `/server/reverse-geo?coords=${this.state.location[0]},${this.state.location[1]}`)
-        .then(response => {
-          console.log('found address...')
-          console.log(response.data)
+  async fetchWeather () {
+    try {
+      const { default: axios } = await import('axios')
 
-          const locationNames = []
+      const response = await axios.get(
+        `/server/weather?coords=${this.state.coords[0]},${this.state.coords[1]}`
+      )
 
-          const keyRegex = /aeroway|hamlet|suburb|town|municipality|city|county/
+      if (response.data.name === 'Error') {
+        this.setState({ error: new Error('Coordinates are not in range') })
+        return
+      }
 
-          const locationObject = response.data.address
-
-          Object.keys(locationObject).forEach(key => {
-            if (keyRegex.test(key)) {
-              locationNames.push(locationObject[key])
-            }
-          })
-
-          const locationName = locationNames[0]
-
-          this.setState({
-            locationName
-          })
-
-          this.setMapView()
-
-          this.findWeather()
-        })
-        .catch(e => console.error(e))
-    })
+      this.setState({ weather: response.data.properties })
+    } catch (error) {
+      console.error(error)
+      this.setState({ error })
+    }
   }
 
-  findCoords (queryString) {
-    import('axios').then(({ default: axios }) => {
-      axios.get('/server/geocode?q=' + queryString)
-        .then(response => {
-          console.log(response.data)
-          this.setState({
-            location: [response.data.lat, response.data.lon]
-          })
+  async fetchCoordinates () {
+    try {
+      const { default: axios } = await import('axios')
 
-          this.findAddress()
-        })
-    })
+      const response = await axios.get('/server/geocode?q=' + this.state.input)
+
+      if (response.data.lat === undefined || response.data.lon === undefined) {
+        this.setState({ error: new Error('Coordinates could not be found') })
+        return
+      }
+
+      this.setState({ coords: [response.data.lat, response.data.lon] })
+
+      await this.fetchWeather()
+    } catch (error) {
+      console.error(error)
+      this.setState({ error })
+    }
   }
 
   setMapView () {
@@ -149,12 +141,12 @@ export class App extends React.Component {
 
         <LocationInput
           handleInput={event => this.setState({ input: event.target.value })}
-          handleClick={() => this.findCoords(this.state.input)}
+          handleClick={this.fetchCoordinates}
           input={this.state.input}
         />
 
         {
-          error !== null && <ErrorNotification error={error}/>
+          error !== null && <ErrorDisplay error={error}/>
         }
 
         {

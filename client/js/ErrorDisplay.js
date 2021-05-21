@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export const ErrorNotification = (props) => {
+export const ErrorDisplay = (props) => {
   return <article>
     <header>
       <h1>Error</h1>
@@ -9,6 +9,6 @@ export const ErrorNotification = (props) => {
     </header>
   </article>
 }
-ErrorNotification.propTypes = {
+ErrorDisplay.propTypes = {
   error: PropTypes.object.isRequired
 }
