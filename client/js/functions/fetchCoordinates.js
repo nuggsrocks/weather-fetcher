@@ -7,7 +7,7 @@ export const fetchCoordinates = async (queryString) => {
   const response = await axios.get('/server/geocode?q=' + queryString)
 
   if (response.data.lat === undefined || response.data.lon === undefined) {
-    throw new Error()
+    throw new Error('Coordinates could not be found!')
   }
 
   return [response.data.lat, response.data.lon]

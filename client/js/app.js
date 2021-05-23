@@ -1,10 +1,8 @@
 import '../scss/index.scss'
 import React from 'react'
-import { LocationInput } from './LocationInput'
-import { LoadingIcon } from './LoadingIcon'
-import { ErrorDisplay } from './ErrorDisplay'
-import { fetchWeather } from './fetchWeather'
-import { locate } from './locate'
+import { LocationInput } from './components/ui/LocationInput'
+import { Header } from './components/ui/Header'
+import { fetchCoordinates } from './functions/fetchCoordinates'
 
 export class App extends React.Component {
   constructor (props) {
@@ -16,59 +14,18 @@ export class App extends React.Component {
       locationName: '',
       error: null
     }
-    this.fetchCoordinates = this.fetchCoordinates.bind(this)
-    this.fetchWeather = this.fetchWeather.bind(this)
+
     this.handleChange = this.handleChange.bind(this)
+    this.handleClick = this.handleClick.bind(this)
     this.setMapView = this.setMapView.bind(this)
-    this.displayWeather = this.displayWeather.bind(this)
 
     this.map = null
     this.marker = null
   }
 
-  async fetchWeather () {
-    try {
-      const { default: axios } = await import('axios')
-
-      const response = await axios.get(
-        `/server/weather?coords=${this.state.coords[0]},${this.state.coords[1]}`
-      )
-
-      if (response.data.name === 'Error') {
-        this.setState({ error: new Error('Coordinates are not in range') })
-        return
-      }
-
-      this.setState({ weather: response.data.properties })
-    } catch (error) {
-      console.error(error)
-      this.setState({ error })
-    }
-  }
-
-  async fetchCoordinates () {
-    try {
-      const { default: axios } = await import('axios')
-
-      const response = await axios.get('/server/geocode?q=' + this.state.input)
-
-      if (response.data.lat === undefined || response.data.lon === undefined) {
-        this.setState({ error: new Error('Coordinates could not be found') })
-        return
-      }
-
-      this.setState({ coords: [response.data.lat, response.data.lon] })
-
-      await this.fetchWeather()
-    } catch (error) {
-      console.error(error)
-      this.setState({ error })
-    }
-  }
-
   setMapView () {
     import('leaflet').then(({ default: leaflet }) => {
-      this.map.setView(this.state.location, 10)
+      this.map.setView(this.state.coords, 10)
       leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
@@ -90,47 +47,24 @@ export class App extends React.Component {
     })
   }
 
-  async componentDidMount () {
-    try {
-      const position = await locate()
-
-      this.setState({ coords: position.coords })
-
-      const weather = await fetchWeather(this.state.coords)
-
-      this.setState({ weather })
-    } catch (error) {
-      console.error(error)
-      this.setState({ error })
-    }
+  handleClick () {
+    fetchCoordinates(this.state.input)
+      .then(coords => {
+        this.setState({coords})
+        this.setMapView()
+      })
+      .catch(error => this.setState({error}))
   }
 
-  displayWeather () {
-    const { weather } = this.state
-
-    return <article>
-      <header>
-        <h1>{this.state.locationName}</h1>
-      </header>
-
-      <div className='spacer'/>
-
-      <section>
-        <div>
-          <h2>{weather.periods[0].shortForecast}</h2>
-        </div>
-        <div>
-          <span>Temperature: </span>
-          {weather.periods[0].temperature}&deg;F
-        </div>
-        <div>
-          <span>Wind:&nbsp;</span>
-          {weather.periods[0].windSpeed + ' ' +
-          weather.periods[0].windDirection}
-        </div>
-      </section>
-
-    </article>
+  componentDidMount () {
+    navigator.geolocation.getCurrentPosition(position => {
+      this.setState({ coords: position.coords })
+      this.setMapView()
+    }, positionError => {
+      this.setState({ error: positionError })
+    }, {
+      timeout: 5000
+    })
   }
 
   render () {
@@ -140,21 +74,16 @@ export class App extends React.Component {
       <main>
 
         <LocationInput
-          handleInput={event => this.setState({ input: event.target.value })}
-          handleClick={this.fetchCoordinates}
-          input={this.state.input}
+          handleChange={event => this.setState({ input: event.target.value })}
+          handleClick={this.handleClick}
         />
 
         {
-          error !== null && <ErrorDisplay error={error}/>
-        }
-
-        {
-          error === null && weather === null && <LoadingIcon />
-        }
-
-        {
-          error === null && weather && this.displayWeather()
+          error !== null
+            ? <Header content={'Error!'}/>
+            : weather === null
+              ? <Header content={'Loading...'}/>
+              : <Header content={'Weather'}/>
         }
 
         <div id='map'/>

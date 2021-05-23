@@ -9,7 +9,7 @@ body {
 }
 
 div#root {
-	
+
 	color: $light;
 	height: 100%;
 
@@ -52,8 +52,8 @@ input {
 		color: $dark;
 		radius: 5px;
 	}
-	
-	
+
+
 	box-sizing: border-box;
 	text-align: center;
 	line-height: 4rem;
@@ -61,10 +61,23 @@ input {
 
 button {
 	cursor: pointer;
-	
+
 	line-height: 4rem;
 	background-color: $dark;
 	color: $light;
+}
+
+h1 {
+	font: {
+		family: 'EB Garamond', serif;
+		size: 6rem;
+	}
+	margin: 0;
+	line-height: 12rem;
+}
+
+code {
+	font-size: 3rem;
 }
 
 article {
@@ -78,22 +91,7 @@ article {
 		flex: 0 1 100%;
 	}
 
-	header {
-		h1 {
-			font: {
-				family: 'EB Garamond', serif;
-				size: 6rem;
-			}
-			margin: 0;
-			line-height: 12rem;
-		}
 
-		code {
-			font-size: 3rem;
-		}
-	}
-
-	
 
 	div {
 		&.spacer {

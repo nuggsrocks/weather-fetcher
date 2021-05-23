@@ -1,10 +1,10 @@
 import axios from 'axios'
-import { fetchAddress } from '../js/fetchAddress'
+import { fetchAddress } from '../js/functions/fetchAddress'
 
 jest.mock('axios')
 
 describe('fetchAddress()', () => {
-  it('should return name of locality on success', async () => {
+  it('should resolve to name of locality on success', async () => {
     expect.assertions(1)
 
     axios.get.mockImplementation(() => Promise.resolve({
@@ -17,34 +17,22 @@ describe('fetchAddress()', () => {
       }
     }))
 
-    try {
-      expect(await fetchAddress([45, -95])).toEqual('foo')
-    } catch (e) {
-      console.error(e)
-    }
+    await expect(fetchAddress([45, -95])).resolves.toEqual('foo')
   })
 
-  it('should reject if passed invalid coordinates', async () => {
+  it('should reject with error if passed invalid coordinates', async () => {
     expect.assertions(1)
 
     axios.get.mockImplementation(() => Promise.resolve({ data: [] }))
 
-    try {
-      await fetchAddress(['a', 'b'])
-    } catch (error) {
-      expect(error).toBeInstanceOf(Error)
-    }
+    await expect(fetchAddress(['a', 'b'])).rejects.toThrow()
   })
 
-  it('should reject on network failure', async () => {
+  it('should reject with error on network failure', async () => {
     expect.assertions(1)
 
     axios.get.mockImplementation(() => Promise.reject(new Error()))
 
-    try {
-      await fetchAddress([55, -105])
-    } catch (error) {
-      expect(error).toBeInstanceOf(Error)
-    }
+    await expect(fetchAddress([55, -105])).rejects.toThrow()
   })
 })

@@ -1,18 +1,33 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import { LocationInput } from '../js/LocationInput'
+import { LocationInput } from '../js/components/ui/LocationInput'
 import userEvent from '@testing-library/user-event'
 
 describe('<LocationInput/>', () => {
-  it('should pass value of input element to click event listener', () => {
-    const mockHandleClick = jest.fn()
+  it('should render button and input', () => {
+    const { getByRole } = render(<LocationInput/>)
 
-    const { getByRole } = render(<LocationInput handleClick={mockHandleClick}/>)
+    expect(getByRole('textbox')).toBeTruthy()
+    expect(getByRole('button')).toBeTruthy()
+  })
 
-    userEvent.type(getByRole('textbox'), 'hello')
+  it('should call onChange prop on input change', () => {
+    const mockOnChange = jest.fn()
+
+    const { getByRole } = render(<LocationInput onChange={mockOnChange}/>)
+
+    userEvent.type(getByRole('textbox'), 'abc')
+
+    expect(mockOnChange).toHaveBeenCalled()
+  })
+
+  it('should call onClick prop on click event', () => {
+    const mockOnClick = jest.fn()
+
+    const { getByRole } = render(<LocationInput onClick={mockOnClick}/>)
 
     userEvent.click(getByRole('button'))
 
-    expect(mockHandleClick).toHaveBeenCalledWith('hello')
+    expect(mockOnClick).toHaveBeenCalledTimes(1)
   })
 })
