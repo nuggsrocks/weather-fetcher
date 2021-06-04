@@ -1,5 +1,5 @@
-export const Map = (L) => {
-  const setView = (map, coordinates) => {
+export const createMap = (L) => ({
+  setView: (map, coordinates) => {
     map.setView(coordinates, 10)
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -8,9 +8,7 @@ export const Map = (L) => {
     }).addTo(map)
 
     L.marker(coordinates)
-      .bindPopup('Your location')
-      .addTo(map)
+    .bindPopup('Your location')
+    .addTo(map)
   }
-
-  return { setView }
-}
+})

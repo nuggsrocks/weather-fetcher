@@ -4,20 +4,22 @@ import { fetchWeather } from '../js/functions/fetchWeather'
 jest.mock('axios')
 
 describe('fetchWeather()', () => {
-  it('should return promise that resolves to object if fetch is successful and points are within range', async () => {
+  it('should return data property if fetch is successful and points are within range', async () => {
     expect.assertions(1)
 
-    axios.get.mockImplementation(() => Promise.resolve({
+    const fakeResponse = {
       data: {
         properties: {}
       }
-    }))
+    }
 
-    await expect(fetchWeather(['45', '-93'])).resolves.toBeInstanceOf(Object)
+    axios.get.mockImplementation(() => Promise.resolve(fakeResponse))
+
+    expect(await fetchWeather(['45', '-93'])).toStrictEqual(fakeResponse.data)
   })
 
-  it('should reject with error if fetch is successful but points are out of range', async () => {
-    expect.assertions(1)
+  it('should return null and log error if fetch is successful but points are out of range', async () => {
+    expect.assertions(2)
 
     axios.get.mockImplementation(() => Promise.resolve({
       data: {
@@ -25,14 +27,16 @@ describe('fetchWeather()', () => {
       }
     }))
 
-    await expect(fetchWeather(['0', '0'])).rejects.toThrow()
+    expect(await fetchWeather(['0', '0'])).toEqual(null)
+    expect(console.error).toHaveBeenCalled()
   })
 
-  it('should reject with error if fetch is unsuccessful', async () => {
-    expect.assertions(1)
+  it('should return null and log error if fetch is unsuccessful', async () => {
+    expect.assertions(2)
 
     axios.get.mockImplementation(() => Promise.reject(new Error('Network error occurred')))
 
-    await expect(fetchWeather(['45', '-93'])).rejects.toThrow()
+    expect(await fetchWeather(['45', '-93'])).toEqual(null)
+    expect(console.error).toHaveBeenCalled()
   })
 })

@@ -9,37 +9,36 @@ describe('fetchCoordinates()', () => {
 
     const mockQueryString = 'los angeles, ca'
 
-    try {
-      await fetchCoordinates(mockQueryString)
-    } catch (e) {
-      console.error(e)
-    }
+    await fetchCoordinates(mockQueryString)
 
-    expect(axios.get.mock.calls[0][0]).toMatch(new RegExp(encodeURIComponent(mockQueryString)))
+    expect(axios.get).toHaveBeenCalledWith(expect.stringMatching(new RegExp(encodeURIComponent(mockQueryString))))
   })
 
-  it('should return promise that resolves to array of coordinates on success', async () => {
+  it('should return array of coordinates on success', async () => {
     expect.assertions(1)
 
     const fakeData = { data: { lat: 1, lon: -1 } }
     axios.get.mockImplementation(() => Promise.resolve(fakeData))
 
-    await expect(fetchCoordinates('anywhere, usa')).resolves.toEqual([1, -1])
+
+    expect(await fetchCoordinates('anywhere, usa')).toEqual([1, -1])
   })
 
-  it('should return promise that rejects with error if coordinates could not be found', async () => {
-    expect.assertions(1)
+  it('should return null and log error if coordinates could not be found', async () => {
+    expect.assertions(2)
 
     axios.get.mockImplementation(() => Promise.resolve({ data: [] }))
 
-    await expect(fetchCoordinates('mars, pluto')).rejects.toThrow()
+    expect(await fetchCoordinates('mars, pluto')).toEqual(null)
+    expect(console.error).toHaveBeenCalled()
   })
 
-  it('should return promise that rejects with error on network error', async () => {
-    expect.assertions(1)
+  it('should return null and log error on network error', async () => {
+    expect.assertions(2)
 
     axios.get.mockImplementation(() => Promise.reject(new Error()))
 
-    await expect(fetchCoordinates('anywhere, usa')).rejects.toThrow()
+    expect(await fetchCoordinates('anywhere, usa')).toEqual(null)
+    expect(console.error).toHaveBeenCalled()
   })
 })
