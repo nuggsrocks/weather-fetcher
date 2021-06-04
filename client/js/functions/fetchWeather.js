@@ -12,5 +12,5 @@ export const fetchWeather = async (coords) => {
     throw new Error('Coordinates are not in range!')
   }
 
-  return response.data.properties
+  return response.data
 }

@@ -7,7 +7,7 @@
     "lint": "eslint .",
     "build:dev": "rm -rf public && webpack --config webpack.dev.js",
     "build:test": "rm -rf test/dist && webpack --config webpack.test.js",
-    "test": "npm run lint -- --fix && jest"
+    "test": "jest"
   },
   "author": "nuggsrocks <nuggsrocks@yahoo.com> (https://github.com/nuggsrocks/)",
   "license": "ISC",

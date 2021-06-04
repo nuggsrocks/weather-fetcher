@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export const LocationInput = ({ onChange, onClick }) => {
+export const SearchBar = ({ handleChange, handleClick }) => {
   return (
   <div>
     <form>
@@ -10,18 +10,18 @@ export const LocationInput = ({ onChange, onClick }) => {
         <input
           id='location'
           type={'text'}
-          onChange={onChange}
+          onChange={handleChange}
         />
       </label>
     </form>
-    <button onClick={onClick}>
+    <button onClick={handleClick}>
       Search
     </button>
   </div>
   )
 }
 
-LocationInput.propTypes = {
-  onClick: PropTypes.func,
-  onChange: PropTypes.func
+SearchBar.propTypes = {
+  handleClick: PropTypes.func,
+  handleChange: PropTypes.func
 }

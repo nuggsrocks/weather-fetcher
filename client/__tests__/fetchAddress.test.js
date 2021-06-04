@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { fetchAddress } from '../js/functions/fetchAddress'
+import { fetchLocality } from '../js/functions/fetchLocality'
 
 jest.mock('axios')
 
@@ -17,7 +17,7 @@ describe('fetchAddress()', () => {
       }
     }))
 
-    await expect(fetchAddress([45, -95])).resolves.toEqual('foo')
+    await expect(fetchLocality([45, -95])).resolves.toEqual('foo')
   })
 
   it('should reject with error if passed invalid coordinates', async () => {
@@ -25,7 +25,7 @@ describe('fetchAddress()', () => {
 
     axios.get.mockImplementation(() => Promise.resolve({ data: [] }))
 
-    await expect(fetchAddress(['a', 'b'])).rejects.toThrow()
+    await expect(fetchLocality(['a', 'b'])).rejects.toThrow()
   })
 
   it('should reject with error on network failure', async () => {
@@ -33,6 +33,6 @@ describe('fetchAddress()', () => {
 
     axios.get.mockImplementation(() => Promise.reject(new Error()))
 
-    await expect(fetchAddress([55, -105])).rejects.toThrow()
+    await expect(fetchLocality([55, -105])).rejects.toThrow()
   })
 })

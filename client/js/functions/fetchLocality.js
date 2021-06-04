@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime'
 import 'core-js/stable'
 
-export const fetchAddress = async (coords) => {
+export const fetchLocality = async (coords) => {
   const { default: axios } = await import('axios')
 
   const response = await axios.get(`/server/reverse-geo?coords=${coords[0]},${coords[1]}`)

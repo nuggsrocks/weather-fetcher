@@ -1,13 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export const Temperature = ({ temp }) => {
-  return <div>
-    <span>Temperature: </span>
-    {temp}&deg;F
-  </div>
+export const Temperature = ({ value }) => {
+  return <span>Temperature: {value}&deg;F</span>
 }
 
 Temperature.propTypes = {
-  temp: PropTypes.number
+  value: PropTypes.number
 }

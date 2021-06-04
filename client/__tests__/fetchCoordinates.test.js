@@ -4,6 +4,20 @@ import { fetchCoordinates } from '../js/functions/fetchCoordinates'
 jest.mock('axios')
 
 describe('fetchCoordinates()', () => {
+  it('should encode string argument to uri before fetch', async () => {
+    axios.get = jest.fn()
+
+    const mockQueryString = 'los angeles, ca'
+
+    try {
+      await fetchCoordinates(mockQueryString)
+    } catch (e) {
+      console.error(e)
+    }
+
+    expect(axios.get.mock.calls[0][0]).toMatch(new RegExp(encodeURIComponent(mockQueryString)))
+  })
+
   it('should return promise that resolves to array of coordinates on success', async () => {
     expect.assertions(1)
 

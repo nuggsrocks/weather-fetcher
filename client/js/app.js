@@ -1,65 +1,59 @@
 import '../scss/index.scss'
 import React from 'react'
-import { LocationInput } from './components/ui/LocationInput'
-import { Header } from './components/ui/Header'
 import { fetchCoordinates } from './functions/fetchCoordinates'
+import { LocationInputContainer } from './components/LocationInputContainer'
+import { fetchWeather } from './functions/fetchWeather'
+import { WeatherContainer } from './components/WeatherContainer'
 
 export class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      input: '',
       weather: null,
       coords: null,
-      locationName: '',
       error: null
     }
 
-    this.handleChange = this.handleChange.bind(this)
-    this.handleClick = this.handleClick.bind(this)
-    this.setMapView = this.setMapView.bind(this)
+    this.searchForWeather = this.searchForWeather.bind(this)
+    this.searchForCoordinates = this.searchForCoordinates.bind(this)
 
     this.map = null
     this.marker = null
   }
 
-  setMapView () {
-    import('leaflet').then(({ default: leaflet }) => {
-      this.map.setView(this.state.coords, 10)
-      leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-      }).addTo(this.map)
 
-      if (this.marker !== null) {
-        this.marker.remove()
-      }
 
-      this.marker = leaflet.marker(this.state.location)
-        .bindPopup('Your location')
-        .addTo(this.map)
-    })
+  async searchForWeather () {
+    try {
+      this.setState({ weather: null, error: null })
+
+      const weather = await fetchWeather(this.state.coords)
+
+      this.setState({ weather })
+    } catch (error) {
+      console.error(error)
+      this.setState({ error })
+    }
   }
 
-  handleChange (event) {
-    this.setState({
-      input: event.target.value
-    })
-  }
+  async searchForCoordinates (queryString) {
+    try {
+      this.setState({ coords: null, error: null })
 
-  handleClick () {
-    fetchCoordinates(this.state.input)
-      .then(coords => {
-        this.setState({coords})
-        this.setMapView()
-      })
-      .catch(error => this.setState({error}))
+      const coords = await fetchCoordinates(queryString)
+
+      this.setState({ coords })
+    } catch (error) {
+      console.error(error)
+      this.setState({ error })
+    } finally {
+      await this.searchForWeather()
+    }
   }
 
   componentDidMount () {
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({ coords: position.coords })
-      this.setMapView()
     }, positionError => {
       this.setState({ error: positionError })
     }, {
@@ -73,17 +67,18 @@ export class App extends React.Component {
     return (
       <main>
 
-        <LocationInput
-          handleChange={event => this.setState({ input: event.target.value })}
-          handleClick={this.handleClick}
-        />
+        <LocationInputContainer handleClick={this.searchForCoordinates}/>
 
         {
-          error !== null
-            ? <Header content={'Error!'}/>
-            : weather === null
-              ? <Header content={'Loading...'}/>
-              : <Header content={'Weather'}/>
+          error !== null && <article><h1>Error!</h1></article>
+        }
+
+        {
+          error === null && weather === null && <article><h1>Loading...</h1></article>
+        }
+
+        {
+          weather !== null && <WeatherContainer weather={weather}/>
         }
 
         <div id='map'/>
