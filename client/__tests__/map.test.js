@@ -1,28 +1,26 @@
 import { Map } from '../js/functions/map'
 import L from 'leaflet'
 
+const mockLeaflet = () => {
+  const L = {
+    map: () => ({
+      setView: jest.fn(),
+      addLayer: jest.fn()
+    }),
+    bindPopup: jest.fn(() => L),
+    addTo: jest.fn(),
+    marker: jest.fn(() => L),
+    tileLayer: jest.fn(() => L)
+  }
 
-const mockLeaflet = () => ({
-  map: () => ({
-    setView: jest.fn(),
-    addLayer: jest.fn()
-  }),
-    marker: jest.fn(() => ({
-    bindPopup: jest.fn(() => ({
-      addTo: jest.fn()
-    }))
-  })),
-    tileLayer: () => ({
-    addTo: jest.fn()
-  })
-})
+  return L
+}
 
 describe('map()', () => {
-
   it('should return object with setView property', () => {
-    const setView = Map(L).setView
+    const map = Map(L)
 
-    expect(setView).toBeInstanceOf(Function)
+    expect(map).toHaveProperty('setView', expect.any(Function))
   })
 
   describe('setView()', () => {
@@ -39,7 +37,9 @@ describe('map()', () => {
 
       expect(map.setView).toHaveBeenCalledWith(coords, expect.any(Number))
       expect(L.marker).toHaveBeenCalledWith(coords)
-
+      expect(L.bindPopup).toHaveBeenCalled()
+      expect(L.addTo).toHaveBeenCalledWith(map)
+      expect(L.tileLayer).toHaveBeenCalled()
     })
   })
 })

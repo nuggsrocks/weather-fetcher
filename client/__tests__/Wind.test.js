@@ -9,8 +9,7 @@ describe('<WindSpeed/>', () => {
 
     render(<Wind speed={speed} direction={direction}/>)
 
-    const expected = `Wind: ${speed} ${direction}`
-
-    expect(document.querySelector('span').textContent).toEqual(expected)
+    expect(document.body.textContent).toMatch(speed)
+    expect(document.body.textContent).toMatch(direction)
   })
 })
