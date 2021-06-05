@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { fetchCoordinates } from '../js/functions/fetchCoordinates'
+import { fetchCoordinates } from '../../js/functions/fetchCoordinates'
 
 jest.mock('axios')
 
@@ -19,7 +19,6 @@ describe('fetchCoordinates()', () => {
 
     const fakeData = { data: { lat: 1, lon: -1 } }
     axios.get.mockImplementation(() => Promise.resolve(fakeData))
-
 
     expect(await fetchCoordinates('anywhere, usa')).toEqual([1, -1])
   })

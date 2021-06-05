@@ -24,6 +24,7 @@ async function searchForLocation (queryString) {
     return res.data[0]
   } catch (e) {
     console.error(e)
+    return null
   }
 }
 
@@ -49,20 +50,22 @@ async function fetchWeatherInfo (coordinates) {
       }
     })
 
+    const city = response.data.properties.relativeLocation.properties.city
+
     const forecastUrl = response.data.properties.forecast
 
     let forecast
 
     if (forecastUrl) {
       const forecastResponse = await axios.get(forecastUrl)
-      forecast = forecastResponse.data
+      forecast = forecastResponse.data.properties.periods
     } else {
       const forecastZoneResponse = await axios.get(
         response.data.properties.forecastZone + '/observations')
       forecast = forecastZoneResponse.data.features[0].properties
     }
 
-    return forecast
+    return { city, periods: forecast }
   } catch (e) {
     // statements
     return e

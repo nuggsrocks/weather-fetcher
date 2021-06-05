@@ -6,8 +6,9 @@
   "scripts": {
     "lint": "eslint .",
     "build:dev": "rm -rf public && webpack --config webpack.dev.js",
-    "build:test": "rm -rf test/dist && webpack --config webpack.test.js",
-    "test": "jest"
+    "build:prod": "rm -rf public && webpack --config webpack.prod.js",
+    "test": "TYPE=unit jest",
+    "test:ui": "jest __tests__/functional/app.test.js"
   },
   "author": "nuggsrocks <nuggsrocks@yahoo.com> (https://github.com/nuggsrocks/)",
   "license": "ISC",
@@ -38,6 +39,7 @@
     "node-sass": "^6.0.0",
     "prop-types": "^15.7.2",
     "sass-loader": "^11.1.1",
+    "selenium-webdriver": "^4.0.0-beta.3",
     "style-loader": "^2.0.0",
     "webpack": "^5.37.0",
     "webpack-cli": "^4.7.0",

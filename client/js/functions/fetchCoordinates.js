@@ -13,8 +13,8 @@ export const fetchCoordinates = async (queryString) => {
     }
 
     return [response.data.lat, response.data.lon]
-  } catch(err) {
-    console.error(err);
+  } catch (err) {
+    console.error(err)
     return null
   }
 }

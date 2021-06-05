@@ -8,7 +8,7 @@ export const createMap = (L) => ({
     }).addTo(map)
 
     L.marker(coordinates)
-    .bindPopup('Your location')
-    .addTo(map)
+      .bindPopup('Your location')
+      .addTo(map)
   }
 })

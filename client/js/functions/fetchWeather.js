@@ -15,7 +15,7 @@ export const fetchWeather = async (coords) => {
     }
 
     return response.data
-  } catch(e) {
+  } catch (e) {
     console.error(e)
     return null
   }

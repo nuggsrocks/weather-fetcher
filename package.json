@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "geckodriver": "^2.0.0"
+  }
+}

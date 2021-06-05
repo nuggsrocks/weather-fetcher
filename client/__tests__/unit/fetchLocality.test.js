@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { fetchLocality } from '../js/functions/fetchLocality'
+import { fetchLocality } from '../../js/functions/fetchLocality'
 
 jest.mock('axios')
 

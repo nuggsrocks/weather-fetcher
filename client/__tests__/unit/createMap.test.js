@@ -1,4 +1,4 @@
-import { createMap } from '../js/functions/createMap'
+import { createMap } from '../../js/functions/createMap'
 import L from 'leaflet'
 
 const mockLeaflet = () => {

@@ -20,8 +20,8 @@ export const fetchLocality = async (coords) => {
     })
 
     return locationNames[0]
-  } catch(err) {
-    console.error(err);
+  } catch (err) {
+    console.error(err)
     return null
   }
 }

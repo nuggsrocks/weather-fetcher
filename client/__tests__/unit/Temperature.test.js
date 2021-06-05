@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import { Temperature } from '../js/components/ui/Temperature'
+import { Temperature } from '../../js/components/ui/Temperature'
 
 describe('<Temperature/>', () => {
   it('should render value of temperature prop to the dom along with correct units', () => {

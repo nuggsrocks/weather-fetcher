@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { SearchButton } from '../js/components/ui/SearchButton'
+import { SearchButton } from '../../js/components/ui/SearchButton'
 
 describe('<SearchButton/>', () => {
   it('should render button element', () => {

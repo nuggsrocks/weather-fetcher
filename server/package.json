@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "start:dev": "nodemon server.js"
+    "start:dev": "npm run lint && nodemon server.js"
   },
   "author": "nuggsrocks <nuggsrocks@yahoo.com> (https://github.com/nuggsrocks/)",
   "license": "ISC",
