@@ -1,11 +1,11 @@
-**/node_modules/
-**/public/
+node_modules/
+public/
 
 **.env*
 
 .DS_Store
-.idea
+.idea/
 
-**/dist/**
+dist/
 
-**/coverage/**
+coverage/

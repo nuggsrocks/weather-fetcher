@@ -1,5 +1,4 @@
-import { createMap } from '../../js/functions/createMap'
-import L from 'leaflet'
+import { createMap } from '../src/js/functions/createMap'
 
 const mockLeaflet = () => {
   const L = {
@@ -17,11 +16,6 @@ const mockLeaflet = () => {
 }
 
 describe('createMap()', () => {
-  it('should return object with setView property', () => {
-    const map = createMap(L)
-
-    expect(map).toHaveProperty('setView', expect.any(Function))
-  })
 
   describe('setView()', () => {
     it('should call map setView and leaflet marker methods with passed in coordinates', () => {

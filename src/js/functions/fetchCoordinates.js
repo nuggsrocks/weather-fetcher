@@ -1,6 +1,3 @@
-import 'regenerator-runtime/runtime'
-import 'core-js/stable'
-
 export const fetchCoordinates = async (queryString) => {
   try {
     const { default: axios } = await import('axios')

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { fetchCoordinates } from '../../js/functions/fetchCoordinates'
+import { fetchCoordinates } from '../src/js/functions/fetchCoordinates'
 
 jest.mock('axios')
 

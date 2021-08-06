@@ -6,7 +6,6 @@ module.exports = {
     jest: true
   },
   extends: [
-    'eslint:recommended',
     'plugin:react/recommended',
     'standard'
   ],
@@ -22,10 +21,9 @@ module.exports = {
   ],
   settings: {
     react: {
-      version: 'detect'
+      version: 'latest'
     }
   },
-  ignorePatterns: ['**/node_modules/*', '**/public/*', '**/dist/*'],
   rules: {
   }
 }

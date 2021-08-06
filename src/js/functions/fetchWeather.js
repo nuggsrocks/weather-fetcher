@@ -1,6 +1,3 @@
-import 'regenerator-runtime/runtime'
-import 'core-js/stable'
-
 export const fetchWeather = async (coords) => {
   try {
     const { default: axios } = await import('axios')

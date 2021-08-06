@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import { Wind } from '../../js/components/ui/Wind'
+import { Wind } from '../src/js/components/ui/Wind'
 
 describe('<WindSpeed/>', () => {
   it('should render wind speed and direction to the dom', () => {

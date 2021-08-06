@@ -1,4 +1,4 @@
-import { reducer, change } from '../../js/functions/searchBarReducer'
+import { reducer, change } from '../src/js/functions/searchBarReducer'
 
 describe('searchBarReducer()', () => {
   it('should initialize state to empty string', () => {

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { fetchWeather } from '../../js/functions/fetchWeather'
+import { fetchWeather } from '../src/js/functions/fetchWeather'
 
 jest.mock('axios')
 
