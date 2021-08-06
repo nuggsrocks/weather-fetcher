@@ -1,7 +1,7 @@
 import '../scss/index.scss'
 import React from 'react'
-import { SearchBar } from './components/ui/SearchBar'
-import { SearchButton } from './components/ui/SearchButton'
+import { TextInput } from './components/ui/TextInput'
+import { Button } from './components/ui/Button'
 import { fetchCoordinates } from './functions/fetchCoordinates'
 import { fetchLocality } from './functions/fetchLocality'
 
@@ -40,8 +40,8 @@ export class App extends React.Component {
   render () {
     return (
       <div>
-        <SearchBar handleChange={(value) => this.setState({ input: value })}/>
-        <SearchButton handleClick={this.searchForPlace}/>
+        <TextInput handleChange={(value) => this.setState({ input: value })}/>
+        <Button handleClick={this.searchForPlace}/>
 
         <article>
 

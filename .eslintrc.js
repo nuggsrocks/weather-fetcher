@@ -7,6 +7,8 @@ module.exports = {
   },
   extends: [
     'plugin:react/recommended',
+    'plugin:testing-library/react',
+    'plugin:jest-dom/recommended',
     'standard'
   ],
   parserOptions: {
@@ -17,7 +19,9 @@ module.exports = {
     sourceType: 'module'
   },
   plugins: [
-    'react'
+    'react',
+    'testing-library',
+    'jest-dom'
   ],
   settings: {
     react: {

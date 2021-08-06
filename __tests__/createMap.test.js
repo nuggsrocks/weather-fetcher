@@ -16,7 +16,6 @@ const mockLeaflet = () => {
 }
 
 describe('createMap()', () => {
-
   describe('setView()', () => {
     it('should call map setView and leaflet marker methods with passed in coordinates', () => {
       const L = mockLeaflet()

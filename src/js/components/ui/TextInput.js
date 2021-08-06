@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export const SearchBar = ({ handleChange }) => {
+export const TextInput = ({ handleChange }) => {
   return <input type={'text'} onChange={event => handleChange(event.target.value)}/>
 }
 
-SearchBar.propTypes = {
+TextInput.propTypes = {
   handleChange: PropTypes.func
 }
