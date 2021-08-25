@@ -1,10 +1,10 @@
 const express = require('express')
 const axios = require('axios')
 const path = require('path')
-
+require('dotenv').config()
 const app = express()
 
-app.use(express.static(path.resolve(__dirname, '../client/public')))
+app.use(express.static(path.resolve(__dirname, './public')))
 
 app.use((req, res, next) => {
   console.log(req.method + ' - ' + req.path)
@@ -39,35 +39,17 @@ async function reverseGeocode (coordinates) {
   }
 }
 
-const WEATHER_API = 'https://api.weather.gov'
+const weatherApi = {
+  URL: 'https://api.weatherapi.com/v1/current.json',
+  KEY: process.env.WEATHER_API_KEY
+}
 
-async function fetchWeatherInfo (coordinates) {
+async function fetchWeatherInfo (query) {
   try {
-    const response = await axios.get(`${WEATHER_API}/points/${coordinates}`, {
-      headers: {
-        'User-Agent': '(mfweatherapp, nuggsrocks@yahoo.com)',
-        accept: 'application/geo+json'
-      }
-    })
+    const response = await axios.get(`${weatherApi.URL}?key=${weatherApi.KEY}&q=${query}&aqi=yes`)
 
-    const city = response.data.properties.relativeLocation.properties.city
-
-    const forecastUrl = response.data.properties.forecast
-
-    let forecast
-
-    if (forecastUrl) {
-      const forecastResponse = await axios.get(forecastUrl)
-      forecast = forecastResponse.data.properties.periods
-    } else {
-      const forecastZoneResponse = await axios.get(
-        response.data.properties.forecastZone + '/observations')
-      forecast = forecastZoneResponse.data.features[0].properties
-    }
-
-    return { city, periods: forecast }
+    return response.data
   } catch (e) {
-    // statements
     return e
   }
 }
@@ -82,14 +64,14 @@ app.route('/server/reverse-geo').get((req, res) => {
 })
 
 app.route('/server/weather').get((req, res) => {
-  fetchWeatherInfo(req.query.coords).then(data => res.send(data))
+  fetchWeatherInfo(req.query.q).then(data => res.send(data))
 })
 
 app.get('/*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/public/index.html'))
+  res.sendFile(path.resolve(__dirname, './public/index.html'))
 })
 
-const PORT = process.env.PORT || 3010
+const PORT = process.env.PORT || 8080
 
 const HOST = process.env.HOST || '127.0.0.1'
 

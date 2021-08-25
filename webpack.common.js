@@ -3,7 +3,7 @@ const path = require('path')
 
 module.exports = {
   entry: {
-    main: './js/index.js'
+    main: './src/js/index.js'
   },
   output: {
     path: path.resolve(__dirname, 'public'),
@@ -29,12 +29,8 @@ module.exports = {
   target: 'web',
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'index.html',
-      filename: 'index.html',
-      meta: {
-        charset: 'utf-8',
-        viewport: 'width=device-width,initial-scale=1.0'
-      }
+      template: './src/index.html',
+      filename: 'index.html'
     })
   ]
 

@@ -1,15 +1,10 @@
-export const fetchWeather = async (coords) => {
+export const fetchWeather = async (query) => {
   try {
     const { default: axios } = await import('axios')
 
     const response = await axios.get(
-      `/server/weather?coords=${coords[0]},${coords[1]}`
+      `/server/weather?q=${query}`
     )
-
-    if (response.data.name === 'Error') {
-      console.error(new Error('Coordinates are not in range!'))
-      return null
-    }
 
     return response.data
   } catch (e) {

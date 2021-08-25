@@ -5,173 +5,59 @@ $light: #fffef5;
 body {
 	margin: 0;
 	background-color: $dark;
+	color: $light;
 	font-family: 'Kumbh Sans', sans-serif;
 }
 
-div#root {
+#root {
+	margin: 1rem;
+}
 
-	color: $light;
-	height: 100%;
+input, button, article {
+	border-radius: 5px;
+}
 
-	main {
-		padding: 20px;
-		height: 100%;
-		background: {
-			size: cover;
-		}
+input, button {
+	margin-bottom: 1rem;
+	font-size: 2rem;
+	width: 100%;
+
+	&:focus {
+		outline: none;
+		border: 2px solid blue;
 	}
 }
 
 button, article {
 	border: {
-		width: 0.1rem;
+		width: 1px;
 		style: solid;
 		color: $light;
-		radius: 5px;
 	}
-}
-
-input, button {
-	margin: {
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 10px;
-	}
-	display: inline-block;
-	font: {
-		size: 2rem;
-	}
-	width: 100%;
 }
 
 input {
-	border: {
-		width: 1px;
-		style: solid;
-		color: $dark;
-		radius: 5px;
-	}
-
-
 	box-sizing: border-box;
 	text-align: center;
 	line-height: 4rem;
+	color: $dark;
 }
 
 button {
 	cursor: pointer;
-
 	line-height: 4rem;
 	background-color: $dark;
 	color: $light;
 }
 
+article {
+	padding: 1rem;
+}
+
 h1 {
+	margin: 0;
 	font: {
 		family: 'EB Garamond', serif;
-		size: 6rem;
+		size: 4rem;
 	}
-	margin: 0;
-	line-height: 12rem;
-}
-
-code {
-	font-size: 3rem;
-}
-
-article {
-	margin: 0;
-	display: flex;
-	flex-flow: row wrap;
-
-
-	> * {
-		margin: 10px 30px;
-		flex: 0 1 100%;
-	}
-
-
-
-	div {
-		&.spacer {
-			height: 0;
-			border: {
-				width: 1px;
-				style: solid;
-				radius: 5px;
-			}
-
-			&.light {
-				border-color: $light;
-			}
-
-			&.medium {
-				border-color: $medium;
-			}
-		}
-	}
-
-	section {
-		div {
-			font-size: 3rem;
-			line-height: 8rem;
-
-			h2 {
-				font-size: 4rem;
-				margin: 0;
-			}
-
-			span {
-				font-weight: bold;
-			}
-
-			&.loading {
-				margin: 50px auto;
-				border: 20px solid black;
-				border-radius: 50%;
-				border-top: 20px solid white;
-				width: 10vw;
-				height: 10vw;
-				animation: spin linear 1s infinite;
-			}
-		}
-
-	}
-}
-
-div#map {
-	height: 40vh;
-	border-radius: 5px;
-	border: 1px solid $light;
-	margin-top: 10px;
-}
-
-
-@media screen and (max-width: 768px) {
-	article {
-		text-align: center;
-		> * {
-			margin: 10px;
-		}
-		header {
-			h1 {
-				font-size: 3rem;
-				line-height: 6rem;
-			}
-		}
-
-		div {
-			span {
-				font-size: 1.75rem;
-				line-height: 3.5rem;
-			}
-		}
-	}
-}
-
-
-@keyframes spin {
-	0% {transform: rotate(0);}
-	100% {transform: rotate(360deg);}
 }
