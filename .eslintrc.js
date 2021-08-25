@@ -28,6 +28,7 @@ module.exports = {
       version: 'latest'
     }
   },
+  ignorePatterns: ['node_modules', 'public'],
   rules: {
   }
 }

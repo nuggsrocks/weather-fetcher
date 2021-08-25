@@ -3,7 +3,6 @@ import React, { Fragment } from 'react'
 import { TextInput } from './components/ui/TextInput'
 import { Button } from './components/ui/Button'
 import { fetchCoordinates } from './functions/fetchCoordinates'
-import { fetchLocality } from './functions/fetchLocality'
 import { Alert } from './components/ui/Alert'
 import { LoadingIcon } from './components/ui/LoadingIcon'
 import { fetchWeather } from './functions/fetchWeather'
@@ -42,19 +41,18 @@ export class App extends React.Component {
   }
 
   geolocate () {
-    this.setState({loading: true, error: false})
+    this.setState({ loading: true, error: false })
     if (window.navigator === undefined) {
-      this.setState({error: new Error('Geolocation not available')})
+      this.setState({ error: new Error('Geolocation not available') })
       return
     }
 
     window.navigator.geolocation.getCurrentPosition((coordinates) => {
-      this.setState({coordinates, loading: false})
+      this.setState({ coordinates, loading: false })
     }, (error) => {
       console.error(error)
-      this.setState({error, loading: false})
+      this.setState({ error, loading: false })
     })
-
   }
 
   componentDidMount () {
@@ -81,7 +79,6 @@ export class App extends React.Component {
           }
 
         </article>
-
 
       </Fragment>
     )

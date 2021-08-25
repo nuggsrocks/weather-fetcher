@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 
-export const Weather = ({data}) => {
+export const Weather = ({ data }) => {
   const airQualities = {
     1: 'Good',
     2: 'Moderate',
@@ -56,5 +56,3 @@ export const Weather = ({data}) => {
 Weather.propTypes = {
   data: PropTypes.object
 }
-
-
