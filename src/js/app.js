@@ -46,11 +46,13 @@ export class App extends React.Component {
         this.setState({ coordinates })
 
         fetchWeather(coordinates).then(weather => {
+          console.log('set loading to false')
           this.setState({ loading: false, weather })
         })
       })
       .catch(error => {
         console.error(error)
+      console.log('set loading to false')
         this.setState({ loading: false, error })
       })
   }
@@ -63,9 +65,11 @@ export class App extends React.Component {
     }
 
     window.navigator.geolocation.getCurrentPosition((coordinates) => {
+      console.log('set loading to false')
       this.setState({ coordinates, loading: false })
     }, (error) => {
-      console.error(error)
+      console.log(error)
+      console.log('set loading to false')
       this.setState({ error, loading: false })
     })
   }
