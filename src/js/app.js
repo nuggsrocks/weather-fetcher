@@ -33,9 +33,9 @@ export class App extends React.Component {
       this.setState({ loading: false, weather })
     })
       .catch(error => {
-      console.error(error)
-      this.setState({ loading: false, error })
-    })
+        console.error(error)
+        this.setState({ loading: false, error })
+      })
   }
 
   searchForPlace () {
@@ -52,7 +52,6 @@ export class App extends React.Component {
       })
       .catch(error => {
         console.error(error)
-      console.log('set loading to false')
         this.setState({ loading: false, error })
       })
   }
