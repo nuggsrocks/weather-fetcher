@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 export const Alert = ({ message }) => {
-  return <Fragment>
+  return <div className={'error'}>
     <h1>Error!</h1>
     <div>{message}</div>
-  </Fragment>
+  </div>
 }
 
 Alert.propTypes = {
