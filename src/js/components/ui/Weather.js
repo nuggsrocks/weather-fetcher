@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+import L from 'leaflet'
 
 export class Weather extends React.Component {
   constructor (props) {
@@ -18,7 +19,6 @@ export class Weather extends React.Component {
 
     this.map = null
     this.marker = null
-
   }
 
   componentDidMount () {
@@ -33,7 +33,6 @@ export class Weather extends React.Component {
     })
 
     this.map.setView([location.lat, location.lon], 13)
-
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -57,9 +56,9 @@ export class Weather extends React.Component {
           <h3>
             {
               this.props.data.current.condition.text.toLowerCase()
-              .replace(/\w+/g, (w) =>
-                w.replace(/^\w/, (c) => c.toUpperCase())
-              )}
+                .replace(/\w+/g, (w) =>
+                  w.replace(/^\w/, (c) => c.toUpperCase())
+                )}
           </h3>
           <p>
             {this.props.data.location.localtime}
