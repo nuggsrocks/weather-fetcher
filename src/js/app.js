@@ -19,8 +19,23 @@ export class App extends React.Component {
       weather: null
     }
 
+    this.handleMapClick = this.handleMapClick.bind(this)
     this.searchForPlace = this.searchForPlace.bind(this)
     this.geolocate = this.geolocate.bind(this)
+  }
+
+  handleMapClick (event) {
+    const coordinates = [event.latlng.lat, event.latlng.lng]
+
+    this.setState({ loading: true, error: false, coordinates })
+
+    fetchWeather(coordinates).then(weather => {
+      this.setState({ loading: false, weather })
+    })
+      .catch(error => {
+      console.error(error)
+      this.setState({ loading: false, error })
+    })
   }
 
   searchForPlace () {
@@ -75,7 +90,7 @@ export class App extends React.Component {
           }
 
           {
-            !this.state.loading && !this.state.error && <Weather data={this.state.weather}/>
+            !this.state.loading && !this.state.error && <Weather data={this.state.weather} handleMapClick={this.handleMapClick}/>
           }
 
         </article>
